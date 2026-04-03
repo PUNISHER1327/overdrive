@@ -110,7 +110,7 @@ const Hero = () => {
               height: '100%',
               objectFit: 'cover'
             }}
-            src="/videos/footballroll.mp4"
+            src="/videos/light.mp4"
           />
 
           {/* Dark Overlay */}
@@ -193,7 +193,10 @@ const Hero = () => {
                   style={{ marginTop: '40px' }}
                 >
                   <button
-                    onClick={() => window.open('https://hudle.in/venues/overdrive-arena/883625', '_blank')}
+                    onClick={() => {
+                      const element = document.getElementById('book');
+                      if (element) element.scrollIntoView({ behavior: 'smooth' });
+                    }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'transparent';
                       e.target.style.color = '#7ED45A';

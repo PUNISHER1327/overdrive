@@ -55,8 +55,7 @@ const SportsOfferings = () => {
                   FIFA-standard artificial turf designed for clinical finishing, ultimate control, and high-stakes matches.
                 </p>
                 <a 
-                  href="https://hudle.in/venues/overdrive-arena/883625"
-                  target="_blank"
+                  href="#book"
                   className="inline-flex items-center gap-2 border border-black text-black text-xs font-dm font-bold uppercase tracking-widest px-6 py-3 rounded-full mt-8 hover:bg-black hover:text-white transition-all"
                 >
                   Book Slot

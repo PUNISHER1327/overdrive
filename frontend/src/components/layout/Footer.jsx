@@ -43,7 +43,7 @@ const Footer = () => {
                       <a href="#about" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">ABOUT</a>
                       <a href="#gallery" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">GALLERY</a>
                       <a href="#contact" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">CONTACT</a>
-                      <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">HUDLE</a>
+                      <a href="#book" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOOKING</a>
                    </div>
                 </div>
 

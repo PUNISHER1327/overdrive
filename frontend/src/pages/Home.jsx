@@ -1,6 +1,6 @@
 import Hero from '../components/sections/Hero'
 import SportsOfferings from '../components/sections/SportsOfferings'
-import BookingCTA from '../components/sections/BookingCTA'
+import BookingSystem from '../components/sections/BookingSystem'
 import Facilities from '../components/sections/Facilities'
 import Events from '../components/sections/Events'
 import Gallery from '../components/sections/Gallery'
@@ -13,7 +13,7 @@ const Home = () => {
     <>
       <Hero />
       <SportsOfferings />
-      <BookingCTA />
+      <BookingSystem />
       <Facilities />
       <Gallery />
       <Events />
