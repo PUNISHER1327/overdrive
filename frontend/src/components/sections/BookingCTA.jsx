@@ -17,7 +17,7 @@ const BookingCTA = () => {
             transition={{ duration: 1 }}
             className="font-bebas text-7xl md:text-9xl leading-[0.8] text-white tracking-tighter mb-6"
           >
-            READY TO <span className="text-primary italic">PLAY?</span>
+            READY TO <span className="text-primary">PLAY?</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}

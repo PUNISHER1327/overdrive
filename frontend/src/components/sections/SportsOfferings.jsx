@@ -7,10 +7,10 @@ import { ArrowUpRight, CheckSquare } from 'lucide-react';
 gsap.registerPlugin(ScrollTrigger);
 
 const images = {
-  football: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=800",
-  cricket: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=800",
-  badminton: "https://images.unsplash.com/photo-1626225967045-9410ec77351f?auto=format&fit=crop&q=80&w=800",
-  pickleball: "https://images.unsplash.com/photo-1623126743135-24d4e334ab51?auto=format&fit=crop&q=80&w=800"
+  football: "/images/football.png",
+  cricket: "/images/cricket.png",
+  badminton: "/images/badminton.png",
+  pickleball: "/images/pickleball.png"
 };
 
 const SportsOfferings = () => {
@@ -87,22 +87,18 @@ const SportsOfferings = () => {
           {/* Card 2: Box Cricket (Top Right Purple Square) */}
           <motion.div 
              whileHover={{ y: -5 }}
-             className="lg:col-span-1 bg-[#9E5BFF] rounded-[40px] p-8 md:p-10 relative overflow-hidden flex flex-col justify-between h-[340px] md:h-auto"
+             className="lg:col-span-1 bg-[#9E5BFF] rounded-[40px] p-8 md:p-10 relative overflow-hidden flex flex-col justify-end h-[340px] md:h-auto group"
           >
-             <h3 className="font-dm text-4xl md:text-[2.75rem] text-white font-medium tracking-tight leading-none z-10 w-2/3">
-               Pro Box Cricket
-             </h3>
-             <p className="text-white/80 font-dm text-sm mt-4 z-10 w-2/3 font-medium">
-               The ultimate short-format pitch.
-             </p>
-             
-             {/* Decorative Image */}
-             <div className="absolute -bottom-8 -right-8 w-48 h-48 md:w-56 md:h-56 bg-white/10 rounded-full flex items-center justify-center overflow-hidden border-4 border-[#9E5BFF] shadow-xl group hover:scale-105 transition-transform">
-                <img 
-                  src={images.cricket} 
-                  alt="Cricket" 
-                  className="w-full h-full object-cover"
-                />
+             <img src={images.cricket} alt="Cricket bg" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay group-hover:scale-105 transition-transform duration-700 pointer-events-none" />
+             <div className="absolute inset-0 bg-gradient-to-t from-[#9E5BFF]/90 via-[#9E5BFF]/40 to-transparent pointer-events-none"></div>
+
+             <div className="relative z-10">
+               <h3 className="font-dm text-4xl md:text-[2.75rem] text-white font-medium tracking-tight leading-none w-4/5 pt-12">
+                 Pro Box Cricket
+               </h3>
+               <p className="text-white/90 font-dm text-sm mt-4 w-4/5 font-medium">
+                 The ultimate short-format pitch.
+               </p>
              </div>
           </motion.div>
 
@@ -114,38 +110,33 @@ const SportsOfferings = () => {
              
              {/* Badminton (Light Blue) */}
              <div className="flex-1 bg-[#DCE9FA] rounded-[30px] p-8 md:p-10 flex flex-col relative overflow-hidden group">
-                {/* Pill Image */}
-                <div className="w-2/3 h-20 bg-white rounded-full mb-6 overflow-hidden shadow-sm relative">
-                   <img 
-                      src={images.badminton} 
-                      alt="Badminton" 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                   />
+                <img src={images.badminton} alt="Badminton bg" className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-multiply group-hover:scale-105 transition-transform duration-700 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#DCE9FA] via-[#DCE9FA]/60 to-transparent pointer-events-none"></div>
+
+                <div className="relative z-10 mt-auto pt-24">
+                  <h3 className="font-dm text-3xl md:text-4xl text-black font-medium tracking-tight">
+                    Badminton
+                  </h3>
+                  <p className="font-dm text-black/80 text-sm mt-3 font-bold">
+                    Speed, agility, and power on our pro-grade courts.
+                  </p>
                 </div>
-                
-                <h3 className="font-dm text-3xl md:text-4xl text-black font-medium tracking-tight mt-auto">
-                  Badminton
-                </h3>
-                <p className="font-dm text-black/70 text-sm mt-3 font-medium">
-                  Speed, agility, and power on our pro-grade courts.
-                </p>
              </div>
 
              {/* Pickleball (Sand Yellow) */}
-             <div className="flex-1 bg-[#E8CC81] rounded-[30px] p-8 md:p-10 flex flex-col justify-between relative group">
-                <div className="flex items-start justify-between">
-                   <div className="w-20 h-20 rounded-3xl border-4 border-black flex items-center justify-center relative overflow-hidden">
-                      <img src={images.pickleball} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all" />
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#9E5BFF] rounded-full border-2 border-[#E8CC81]"></div>
-                   </div>
-                   <span className="font-bebas text-6xl text-[#9E5BFF] tracking-widest mt-2 -mr-2">04 PKL</span>
+             <div className="flex-1 bg-[#E8CC81] rounded-[30px] p-8 md:p-10 flex flex-col justify-between relative group overflow-hidden">
+                <img src={images.pickleball} alt="Pickleball bg" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-multiply group-hover:scale-105 transition-transform duration-700 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#E8CC81] via-[#E8CC81]/40 to-transparent pointer-events-none"></div>
+
+                <div className="flex items-start justify-end relative z-10">
+                   <span className="font-bebas text-6xl text-[#9E5BFF] tracking-widest mt-2 -mr-2 bg-white/40 px-3 rounded-2xl backdrop-blur-md">04 PKL</span>
                 </div>
                 
-                <div className="mt-12">
+                <div className="mt-12 relative z-10 pt-10">
                    <h3 className="font-dm text-xl md:text-2xl text-black font-medium tracking-tight">
                      Pickleball Club
                    </h3>
-                   <p className="font-dm text-black/70 text-xs mt-2 font-medium max-w-[200px]">
+                   <p className="font-dm text-black/80 text-xs mt-2 font-bold max-w-[200px]">
                      The fastest growing urban sport, now in Jammu. Play today.
                    </p>
                 </div>

@@ -27,34 +27,44 @@ const Hero = () => {
     if (!video) return;
 
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     const init = () => {
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        video.loop = true;
+        video.play().catch(e => console.log(e));
+      }
+
+      let lastUpdate = 0;
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: "top top",
-        end: "+=400%",
-        scrub: 1,
+        end: isMobile ? "+=150%" : "+=400%",
+        scrub: true,
         pin: videoWrapperRef.current,
         anticipatePin: 1,
         onUpdate: (self) => {
-          if (video.duration) {
-            video.currentTime = self.progress * video.duration;
+          if (!isMobile && video.duration) {
+            const now = performance.now();
+            if (now - lastUpdate > 33) { // Throttle video updates for Chrome
+              video.currentTime = self.progress * video.duration;
+              lastUpdate = now;
+            }
           }
           setProgress(self.progress);
         }
       });
     };
 
-    // If video is already ready
-    if (video.readyState >= 3) {
-      init();
-    } else {
-      video.addEventListener("canplaythrough", init, { once: true });
-    }
+    // Force Chrome to kickstart media fetching
+    video.load();
+    // Initialize immediately to guarantee ScrollTrigger and text animations work!
+    init();
 
     return () => {
       ScrollTrigger.killAll();
-      video.removeEventListener("canplaythrough", init);
     };
   }, []);
 
@@ -80,7 +90,13 @@ const Hero = () => {
         ref={containerRef} 
         style={{ position: 'relative' }}
       >
-        <div ref={videoWrapperRef} style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+        <div ref={videoWrapperRef} style={{ position: 'relative', height: '100dvh', width: '100vw' }}>
+          <motion.div 
+            initial={{ scale: 0.35, borderRadius: '120px', opacity: 0 }}
+            animate={{ scale: 1, borderRadius: '0px', opacity: 1 }}
+            transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 1.6 }}
+            style={{ position: 'absolute', inset: 0, overflow: 'hidden', backgroundColor: '#000' }}
+          >
           
           {/* Video Background */}
           <video 
@@ -94,7 +110,7 @@ const Hero = () => {
               height: '100%',
               objectFit: 'cover'
             }}
-            src="/videos/light.mp4"
+            src="/videos/footballroll.mp4"
           />
 
           {/* Dark Overlay */}
@@ -119,7 +135,7 @@ const Hero = () => {
             }}
           >
             {/* Headlines */}
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               <motion.div 
                 key={active.heading}
                 initial={
@@ -132,9 +148,9 @@ const Hero = () => {
                     ? { opacity: 1, scale: 1, y: 0 } 
                     : { opacity: 1, y: 0 }
                 }
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-                style={{ textAlign: 'center' }}
+                exit={{ opacity: 0, scale: 1.05, y: -20, position: 'absolute' }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                style={{ textAlign: 'center', width: '100%' }}
               >
                 <h1 
                   style={{
@@ -154,7 +170,7 @@ const Hero = () => {
                   style={{
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: "18px",
-                    color: "#888888",
+                    color: "#d5ceceff",
                     letterSpacing: "3px",
                     textTransform: "uppercase",
                     marginTop: "16px",
@@ -206,6 +222,7 @@ const Hero = () => {
             </AnimatePresence>
           </div>
 
+          </motion.div>
         </div>
       </div>
     </>

@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X, Lock } from 'lucide-react';
 import { getEvents, setEvents, getGallery, setGallery, getRegistrations } from '../utils/dataStore';
 
 const Admin = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(sessionStorage.getItem('od_admin_auth') === 'true');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('registrations');
   
   // Data States
   const [events, setLocalEvents] = useState([]);
   const [gallery, setLocalGallery] = useState([]);
   const [registrations, setRegistrations] = useState([]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (email === 'admin@overdrive.com' && password === '200413') {
+      setIsAuthenticated(true);
+      sessionStorage.setItem('od_admin_auth', 'true');
+      setError('');
+    } else {
+      setError('Invalid credentials. Access denied.');
+    }
+  };
 
   // Fetch initial data exactly once on mount
   useEffect(() => {
@@ -218,6 +233,60 @@ const Admin = () => {
     </div>
   );
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#080808] flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#111111] p-8 rounded-2xl border border-[#1F1F1F] w-full max-w-md"
+        >
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+              <Lock size={32} />
+            </div>
+          </div>
+          <h2 className="font-bebas text-4xl text-white text-center tracking-widest mb-2">ACCESS RESTRICTED</h2>
+          <p className="font-dm text-white/50 text-center text-sm mb-8">Please login to access the Overdrive CMS.</p>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1 block">Email</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary font-dm outline-none transition-all"
+                placeholder="admin@overdrive.com"
+                required
+              />
+            </div>
+            <div>
+              <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1 block">Password</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary font-dm outline-none transition-all"
+                placeholder="••••••"
+                required
+              />
+            </div>
+            
+            {error && <p className="text-red-500 font-dm text-xs font-bold text-center">{error}</p>}
+
+            <button 
+              type="submit"
+              className="w-full bg-primary text-black font-bebas text-xl tracking-widest py-4 rounded-lg hover:bg-white transition-colors mt-4"
+            >
+              LOGIN TO CMS
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#080808] flex">
       {/* Sidebar (Sticky) */}
@@ -237,9 +306,9 @@ const Admin = () => {
             </button>
          </nav>
          <div className="p-4 border-t border-[#1F1F1F]">
-             <a href="/" className="flex items-center gap-3 px-4 py-3 text-white/50 hover:text-white font-dm text-sm font-bold transition-colors">
+             <button onClick={() => { sessionStorage.removeItem('od_admin_auth'); window.location.href = '/' }} className="w-full flex items-center justify-start gap-3 px-4 py-3 text-white/50 hover:text-white font-dm text-sm font-bold transition-colors">
                  <LogOut size={18} /> Exit Admin
-             </a>
+             </button>
          </div>
       </div>
 
