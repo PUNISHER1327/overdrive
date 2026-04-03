@@ -14,31 +14,145 @@ const BookingSystem = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [bookingDetails, setBookingDetails] = useState({ name: '', phone: '' });
   const [bookingStatus, setBookingStatus] = useState('idle'); // idle, loading, success
-  const [mockBookedSlots, setMockBookedSlots] = useState([]);
+  const [bookedSlots, setBookedSlots] = useState([]);
 
-  // Mocking API call to fetch available slots
+  // Fetch available slots from backend
   useEffect(() => {
+     if (!selectedDate) return;
     setBookingStatus('idle');
     setSelectedSlot(null);
     
-    // Randomize some booked slots for realism based on sport and date
-    const hash = selectedSport.length + parseInt(selectedDate.replace(/-/g, ''));
-    const booked = timeSlots.filter((_, i) => (hash + i) % 3 === 0); 
-    setMockBookedSlots(booked);
-  }, [selectedSport, selectedDate]);
+    const fetchBookings = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/bookings/${selectedDate}`);
+        if (!response.ok) throw new Error('Failed to fetch bookings');
+        const data = await response.json();
+        setBookedSlots(data.map(booking => booking.startTime));
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+        setBookedSlots([]);
+      }
+    };
 
-  const handleBooking = (e) => {
-    e.preventDefault();
-    if (!selectedSlot || !bookingDetails.name || !bookingDetails.phone) return;
+    fetchBookings();
+  }, [selectedDate]);
 
-    setBookingStatus('loading');
-    
-    // Simulate API delay
-    setTimeout(() => {
-      setBookingStatus('success');
-      // In a real app, we'd update booked slots here
-    }, 1500);
+  const handleBooking = async (e) => {
+  e.preventDefault();
+
+  if (!selectedSlot || !bookingDetails.name || !bookingDetails.phone) return;
+
+  setBookingStatus('loading');
+
+  try {
+    const endTimeHour = parseInt(selectedSlot) + 1;
+    const endTime = `${endTimeHour < 10 ? '0' : ''}${endTimeHour}:00`;
+
+    const data = {
+      name: bookingDetails.name,
+      phone: bookingDetails.phone,
+      date: selectedDate,
+      startTime: selectedSlot,
+      endTime: endTime,
+      amount: 1000,
+    };
+
+    // ✅ CALL CREATE ORDER
+    const res = await fetch("http://localhost:8000/api/payment/create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message);
+    }
+
+    const { order, bookingData } = await res.json();
+
+    // ✅ OPEN PAYMENT POPUP
+    openRazorpay(order, bookingData);
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert(error.message);
+    setBookingStatus('idle');
+  }
+};
+
+const openRazorpay = (order, bookingData) => {
+  const options = {
+    key: "rzp_test_SZAcyYhkLxcojR",
+    amount: order.amount,
+    currency: "INR",
+    order_id: order.id,
+
+    method: {
+      upi: true,
+    },
+
+    // ✅ SUCCESS CASE
+    handler: async function (response) {
+      try {
+        const verifyRes = await fetch("http://localhost:8000/api/payment/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...response,
+            bookingData,
+          }),
+        });
+
+        if (!verifyRes.ok) throw new Error("Payment verification failed");
+
+        setBookingStatus("success");
+        setBookedSlots(prev => [...prev, bookingData.startTime]);
+
+      } catch (error) {
+        console.error(error);
+        alert("Payment verification failed");
+        setBookingStatus("idle");
+      }
+    },
+
+    // ✅ CANCEL / CLOSE CASE
+    modal: {
+      ondismiss: function () {
+        console.log("Payment popup closed");
+
+        alert("Payment cancelled");
+
+        setBookingStatus("idle"); // 🔥 reset UI
+      }
+    }
   };
+
+  const rzp = new window.Razorpay(options);
+
+  // ✅ FAILURE CASE
+  rzp.on("payment.failed", function (response) {
+    console.log("Payment Failed:", response.error);
+
+    alert("Payment failed. Please try again.");
+
+    setBookingStatus("idle"); // 🔥 reset UI
+  });
+
+  rzp.on("payment.failed", function (response) {
+    console.log("Payment Failed:", response.error);
+
+    alert("Payment failed. Please try again.");
+
+    setBookingStatus("idle");
+  });
+  
+  rzp.open();
+};
 
   const resetBooking = () => {
     setBookingStatus('idle');
@@ -149,7 +263,7 @@ const BookingSystem = () => {
                   </h3>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {timeSlots.map(slot => {
-                      const isBooked = mockBookedSlots.includes(slot);
+                      const isBooked = bookedSlots.includes(slot);
                       return (
                         <button
                           key={slot}
