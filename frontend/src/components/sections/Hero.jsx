@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,26 +18,70 @@ const headlines = [
 
 const Hero = () => {
   const [progress, setProgress] = useState(0);
-  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const videoWrapperRef = useRef(null);
+  const framesRef = useRef([]);
+  const frameCount = 160;
+
+  // Preload images
+  useEffect(() => {
+    const preloadImages = () => {
+      for (let i = 1; i <= frameCount; i++) {
+        const img = new Image();
+        img.src = `/frame/ezgif-frame-${String(i).padStart(3, '0')}.jpg`;
+        framesRef.current[i - 1] = img;
+      }
+    };
+    preloadImages();
+  }, []);
 
   useLayoutEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext('2d');
 
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
 
+    const drawImage = (index) => {
+      const img = framesRef.current[index];
+      if (!img) return;
+
+      // Ensure image is loaded before drawing
+      if (!img.complete) {
+        img.onload = () => drawImage(index);
+        return;
+      }
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const imgWidth = img.width;
+      const imgHeight = img.height;
+
+      const ratio = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight);
+      const newWidth = imgWidth * ratio;
+      const newHeight = imgHeight * ratio;
+      const x = (canvasWidth - newWidth) / 2;
+      const y = (canvasHeight - newHeight) / 2;
+
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      context.drawImage(img, x, y, newWidth, newHeight);
+    };
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // We don't want to use the local 'progress' state here because it might be stale 
+      // during the resize event listener setup, but ScrollTrigger handles it.
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
     const init = () => {
       const isMobile = window.innerWidth <= 768;
 
-      if (isMobile) {
-        video.loop = true;
-        video.play().catch(e => console.log(e));
-      }
-
-      let lastUpdate = 0;
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: "top top",
@@ -46,24 +90,22 @@ const Hero = () => {
         pin: videoWrapperRef.current,
         anticipatePin: 1,
         onUpdate: (self) => {
-          if (!isMobile && video.duration) {
-            const now = performance.now();
-            if (now - lastUpdate > 33) { // Throttle video updates for Chrome
-              video.currentTime = self.progress * video.duration;
-              lastUpdate = now;
-            }
-          }
+          const frameIndex = Math.floor(self.progress * (frameCount - 1));
+          requestAnimationFrame(() => drawImage(frameIndex));
           setProgress(self.progress);
         }
       });
+      
+      // Initial draw
+      drawImage(0);
     };
 
-    // Force Chrome to kickstart media fetching
-    video.load();
-    // Initialize immediately to guarantee ScrollTrigger and text animations work!
-    init();
+    // Give images a tiny bit of time to start loading before initial draw
+    const timeout = setTimeout(init, 100);
 
     return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', handleResize);
       ScrollTrigger.killAll();
     };
   }, []);
@@ -98,19 +140,15 @@ const Hero = () => {
             style={{ position: 'absolute', inset: 0, overflow: 'hidden', backgroundColor: '#000' }}
           >
           
-          {/* Video Background */}
-          <video 
-            ref={videoRef}
-            muted 
-            playsInline 
-            preload="auto"
+          {/* Canvas Background */}
+          <canvas 
+            ref={canvasRef}
             style={{
               position: 'absolute',
               width: '100%',
               height: '100%',
-              objectFit: 'cover'
+              display: 'block'
             }}
-            src="/videos/light.mp4"
           />
 
           {/* Dark Overlay */}
