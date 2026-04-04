@@ -1,10 +1,10 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import Booking from "../models/Booking.js";
+import { sendSMS } from "../utils/sendSMS.js";
 
 
-
-// ✅ Create Order
+// ✅ Create Order (LOCK SLOT)
 export const createOrder = async (req, res) => {
   try {
     const { amount, date, startTime, endTime, name, phone } = req.body;
@@ -20,8 +20,10 @@ export const createOrder = async (req, res) => {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
+    // 🔒 Check if slot already locked or booked
     const existingBooking = await Booking.findOne({
       date,
+      status: { $in: ["pending", "confirmed"] }, // 🔥 important
       $or: [
         {
           startTime: { $lt: endTime },
@@ -34,6 +36,17 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Slot already booked" });
     }
 
+    // 🔒 Create temporary booking (LOCK SLOT)
+    const tempBooking = await Booking.create({
+      name,
+      phone,
+      date,
+      startTime,
+      endTime,
+      amount,
+      status: "pending",
+    });
+
     const options = {
       amount: amount * 100,
       currency: "INR",
@@ -44,7 +57,7 @@ export const createOrder = async (req, res) => {
 
     res.json({
       order,
-      bookingData: { name, phone, date, startTime, endTime, amount },
+      bookingId: tempBooking._id, // 🔥 important
     });
 
   } catch (error) {
@@ -53,14 +66,16 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// ✅ Verify Payment & Save Booking
+
+
+// ✅ Verify Payment → CONFIRM BOOKING
 export const verifyPayment = async (req, res) => {
   try {
     const {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      bookingData,
+      bookingId, // 🔥 changed
     } = req.body;
 
     const generatedSignature = crypto
@@ -72,15 +87,46 @@ export const verifyPayment = async (req, res) => {
       return res.status(400).json({ message: "Payment verification failed" });
     }
 
-    // ✅ Save booking after payment
-    const booking = await Booking.create({
-      ...bookingData,
-      paymentId: razorpay_payment_id,
-      status: "confirmed",
-    });
+    // 🔥 FIND EXISTING PENDING BOOKING
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // ✅ UPDATE BOOKING
+    booking.status = "confirmed";
+    booking.paymentId = razorpay_payment_id;
+
+    await booking.save();
+    await sendSMS(
+  booking.phone,
+  `Your booking is confirmed!
+Date: ${booking.date}
+Time: ${booking.startTime} - ${booking.endTime}`
+);
 
     res.json({ message: "Payment successful", booking });
+
   } catch (error) {
+    console.error("Verify Payment Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// ❌ Cancel Booking (on failure / close)
+export const cancelBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Booking.findByIdAndDelete(id);
+
+    res.json({ message: "Booking cancelled" });
+
+  } catch (error) {
+    console.error("Cancel Booking Error:", error);
     res.status(500).json({ message: error.message });
   }
 };

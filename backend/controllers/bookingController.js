@@ -5,7 +5,10 @@ export const getBookingsByDate = async (req, res) => {
   try {
     const { date } = req.params;
 
-    const bookings = await Booking.find({ date });
+    const bookings = await Booking.find({
+  date,
+  status: { $in: ["pending", "confirmed"] }
+});
 
     res.json(bookings);
   } catch (error) {

@@ -71,10 +71,10 @@ const BookingSystem = () => {
       throw new Error(err.message);
     }
 
-    const { order, bookingData } = await res.json();
+    const { order, bookingId } = await res.json();
 
     // ✅ OPEN PAYMENT POPUP
-    openRazorpay(order, bookingData);
+    openRazorpay(order, bookingId);
 
   } catch (error) {
     console.error("Error:", error);
@@ -83,7 +83,7 @@ const BookingSystem = () => {
   }
 };
 
-const openRazorpay = (order, bookingData) => {
+const openRazorpay = (order, bookingId) => {
   const options = {
     key: "rzp_test_SZAcyYhkLxcojR",
     amount: order.amount,
@@ -104,14 +104,14 @@ const openRazorpay = (order, bookingData) => {
           },
           body: JSON.stringify({
             ...response,
-            bookingData,
+            bookingId,
           }),
         });
 
         if (!verifyRes.ok) throw new Error("Payment verification failed");
 
         setBookingStatus("success");
-        setBookedSlots(prev => [...prev, bookingData.startTime]);
+        setBookedSlots(prev => [...prev, bookingId.startTime]);
 
       } catch (error) {
         console.error(error);
@@ -122,26 +122,26 @@ const openRazorpay = (order, bookingData) => {
 
     // ✅ CANCEL / CLOSE CASE
     modal: {
-      ondismiss: function () {
-        console.log("Payment popup closed");
+  ondismiss: async function () {
+    await fetch(`http://localhost:8000/api/payment/cancel/${bookingId}`, {
+      method: "DELETE",
+    });
 
-        alert("Payment cancelled");
-
-        setBookingStatus("idle"); // 🔥 reset UI
-      }
-    }
+    setBookingStatus("idle");
+  }
+}
   };
 
   const rzp = new window.Razorpay(options);
 
   // ✅ FAILURE CASE
-  rzp.on("payment.failed", function (response) {
-    console.log("Payment Failed:", response.error);
-
-    alert("Payment failed. Please try again.");
-
-    setBookingStatus("idle"); // 🔥 reset UI
+  rzp.on("payment.failed", async function () {
+  await fetch(`http://localhost:8000/api/payment/cancel/${bookingId}`, {
+    method: "DELETE",
   });
+
+  setBookingStatus("idle");
+});
 
   rzp.on("payment.failed", function (response) {
     console.log("Payment Failed:", response.error);
@@ -150,7 +150,7 @@ const openRazorpay = (order, bookingData) => {
 
     setBookingStatus("idle");
   });
-  
+
   rzp.open();
 };
 
