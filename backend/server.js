@@ -7,6 +7,8 @@ import { connectDB } from "./config/db.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import adminAuthRoutes from "./routes/adminAuthRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.get("/", (req, res) => {
 app.use("/api/contact", contactRoutes);
 app.use("/api/bookings",bookingRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/admin/auth", adminAuthRoutes);
+app.use("/api/admin", adminRoutes);
 
 const PORT = process.env.PORT || 8000;
 
