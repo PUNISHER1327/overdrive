@@ -8,12 +8,31 @@ import Testimonials from '../components/sections/Testimonials'
 
 import FindUs from '../components/sections/FindUs'
 
+import { useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+
 const Home = () => {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [hash]);
+
   return (
     <>
       <Hero />
       <SportsOfferings />
-      <BookingSystem />
+      {/* <BookingSystem /> */}
       <Facilities />
       <Gallery />
       <Events />

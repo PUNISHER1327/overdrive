@@ -128,7 +128,9 @@ const FindUs = () => {
 
              {/* Row 3: Digital Ticket Booking CTA */}
              <motion.a 
-                href="#book"
+                href="https://hudle.in/venues/overdrive-arena/883625"
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}

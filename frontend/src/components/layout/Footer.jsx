@@ -19,7 +19,7 @@ const Footer = () => {
                  OVERDRIVE<span className="text-white">.</span>
                </h2>
                <p className="text-black/80 font-dm text-sm md:text-base leading-relaxed mt-6 font-medium max-w-sm">
-                 Jammu's premier multi-sport indoor facility. Built for athletes, powered by passion. Play, compete, and dominate on professional grounds.
+                 Jammu's premier multi-sport outdoor facility. Built for athletes, powered by passion. Play, compete, and dominate on professional grounds.
                </p>
              </div>
 
@@ -43,7 +43,7 @@ const Footer = () => {
                       <a href="#about" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">ABOUT</a>
                       <a href="#gallery" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">GALLERY</a>
                       <a href="#contact" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">CONTACT</a>
-                      <a href="#book" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOOKING</a>
+                      <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" rel="noopener noreferrer" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOOKING</a>
                    </div>
                 </div>
 

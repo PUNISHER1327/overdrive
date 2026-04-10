@@ -7,7 +7,7 @@ const headlines = [
   {
     range: [0, 0.50],
     heading: "THE ARENA AWAITS",
-    sub: "Jammu's premier indoor sports facility"
+    sub: "Jammu's premier outdoor sports facility"
   },
   {
     range: [0.50, 1.00],
@@ -232,8 +232,7 @@ const Hero = () => {
                 >
                   <button
                     onClick={() => {
-                      const element = document.getElementById('book');
-                      if (element) element.scrollIntoView({ behavior: 'smooth' });
+                      window.open("https://hudle.in/venues/overdrive-arena/883625", "_blank");
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = 'transparent';

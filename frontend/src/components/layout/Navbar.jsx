@@ -50,7 +50,9 @@ const Navbar = () => {
             </Link>
           ))}
           <a
-            href="#book"
+            href="https://hudle.in/venues/overdrive-arena/883625"
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-primary text-black font-bebas px-6 py-2 rounded-full text-lg tracking-widest hover:bg-white hover:text-black border border-primary transition-all duration-300"
           >
             BOOK A SLOT
@@ -86,7 +88,9 @@ const Navbar = () => {
               </Link>
             ))}
             <a
-              href="#book"
+              href="https://hudle.in/venues/overdrive-arena/883625"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-primary text-black font-bebas px-10 py-4 rounded-full text-2xl tracking-widest mt-6"
               onClick={() => setIsMenuOpen(false)}
             >

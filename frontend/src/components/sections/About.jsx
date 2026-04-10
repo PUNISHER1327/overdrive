@@ -69,7 +69,7 @@ const About = () => {
             <div className="absolute inset-0 bg-gradient-to-tr from-[#080808] via-transparent to-transparent"></div>
             <div className="absolute bottom-10 left-10 p-8 glass rounded-2xl border border-white/10 max-w-sm group-hover:scale-105 transition-all duration-700">
                <h4 className="font-bebas text-3xl text-white mb-2">BUILT FOR CHAMPIONS</h4>
-               <p className="text-textMuted text-sm font-medium">Jammu's first choice for high-intensity indoor sports.</p>
+               <p className="text-textMuted text-sm font-medium">Jammu's first choice for high-intensity outdoor sports.</p>
             </div>
           </motion.div>
 
@@ -102,7 +102,7 @@ const About = () => {
               className="space-y-6 font-medium text-textMuted max-w-xl leading-relaxed"
             >
               <p>
-                 Overdrive Arena is Jammu's premier multi-sport indoor facility, meticulously designed for both serious athletes and recreational players. Located at Kamla Palace Road, we host high-octane football matches, intense box cricket tournaments, and competitive badminton sessions.
+                 Overdrive Arena is Jammu's premier multi-sport outdoor facility, meticulously designed for both serious athletes and recreational players. Located at Kamla Palace Road, we host high-octane football matches, intense box cricket tournaments, and competitive badminton sessions.
               </p>
               <p>
                  Our facility is equipped with FIFA-standard turfs and pro-grade lighting to ensure your game never stops, day or night. Whether you're here to train for the next big game or just looking for a weekend match with friends, Overdrive provides the perfect stadium-energy atmosphere.
