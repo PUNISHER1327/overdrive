@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, Phone, CheckCircle2, ChevronRight } from 'lucide-react';
+import { API_URL } from '../../config';
 
 const sportsList = ['Football', 'Cricket', 'Badminton', 'Pickleball'];
 
@@ -53,7 +54,7 @@ const BookingSystem = () => {
     
     const fetchBookings = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/bookings/${selectedDate}`);
+        const response = await fetch(`${API_URL}/api/bookings/${selectedDate}`);
         if (!response.ok) throw new Error('Failed to fetch bookings');
         const data = await response.json();
         setBookedSlots(data.map(booking => booking.startTime));
@@ -93,7 +94,7 @@ const BookingSystem = () => {
     };
 
     // ✅ CALL CREATE ORDER
-    const res = await fetch("http://localhost:8000/api/payment/create-order", {
+    const res = await fetch(`${API_URL}/api/payment/create-order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +133,7 @@ const openRazorpay = (order, bookingId) => {
     // ✅ SUCCESS CASE
     handler: async function (response) {
       try {
-        const verifyRes = await fetch("http://localhost:8000/api/payment/verify", {
+        const verifyRes = await fetch(`${API_URL}/api/payment/verify`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -158,7 +159,7 @@ const openRazorpay = (order, bookingId) => {
     // ✅ CANCEL / CLOSE CASE
     modal: {
   ondismiss: async function () {
-    await fetch(`http://localhost:8000/api/payment/cancel/${bookingId}`, {
+    await fetch(`${API_URL}/api/payment/cancel/${bookingId}`, {
       method: "DELETE",
     });
 
@@ -171,7 +172,7 @@ const openRazorpay = (order, bookingId) => {
 
   // ✅ FAILURE CASE
   rzp.on("payment.failed", async function () {
-  await fetch(`http://localhost:8000/api/payment/cancel/${bookingId}`, {
+  await fetch(`${API_URL}/api/payment/cancel/${bookingId}`, {
     method: "DELETE",
   });
 

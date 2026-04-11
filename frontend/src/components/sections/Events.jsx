@@ -2,14 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Calendar, Info, Trophy } from 'lucide-react';
 import { getEvents, registerTeam } from '../../utils/dataStore';
+import { API_URL } from '../../config';
 
 const Events = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load events dynamically from CMS
+  // Load events dynamically from Backend
   useEffect(() => {
-     setEvents(getEvents());
+     const fetchEvents = async () => {
+        try {
+          const res = await fetch(`${API_URL}/api/competitions`);
+          const data = await res.json();
+          setEvents(data);
+        } catch (err) {
+          console.error('Failed to fetch competitions:', err);
+        } finally {
+          setLoading(false);
+        }
+     };
+     fetchEvents();
   }, []);
 
   const nextEvent = () => {
@@ -30,7 +43,57 @@ const Events = () => {
      }
   };
 
-  if (events.length === 0) return null;
+  if (loading) return null;
+
+  // PREMIUM EMPTY STATE
+  if (events.length === 0) {
+    return (
+      <section id="events" className="relative w-full py-24 bg-[#080808] border-b border-[#1F1F1F] overflow-hidden">
+        <div className="container mx-auto px-6 md:px-16 flex flex-col items-center justify-center text-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-8 border border-primary/20"
+          >
+            <Trophy className="text-primary" size={32} />
+          </motion.div>
+          
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="font-bebas text-5xl md:text-7xl text-white tracking-widest mb-4"
+          >
+            NO ACTIVE COMPETITIONS
+          </motion.h2>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="font-dm text-textMuted max-w-lg mb-10"
+          >
+            We're currently planning some massive tournaments and leagues for the upcoming season. Follow us on Instagram to stay updated on the next big reveal!
+          </motion.p>
+          
+          <motion.a 
+            href="#" 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-[#111] border border-[#1f1f1f] text-white font-dm font-bold text-xs uppercase tracking-[0.3em] px-8 py-4 rounded-full hover:border-primary hover:text-primary transition-all"
+          >
+            Follow @OverdriveArena
+          </motion.a>
+        </div>
+        
+        {/* Subtle background text */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
+          <h3 className="font-bebas text-[20vw] text-white/[0.02] tracking-tighter whitespace-nowrap">COMING SOON</h3>
+        </div>
+      </section>
+    );
+  }
+
   const activeEvent = events[currentIndex];
 
   return (

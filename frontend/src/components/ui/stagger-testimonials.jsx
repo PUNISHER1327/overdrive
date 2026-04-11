@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { API_URL } from '../../config';
 
 const SQRT_5000 = Math.sqrt(5000);
 
@@ -89,7 +90,7 @@ export const StaggerTestimonials = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/reviews');
+        const response = await fetch(`${API_URL}/api/reviews`);
         const json = await response.json();
         
         if (json.success && json.data.length > 0) {

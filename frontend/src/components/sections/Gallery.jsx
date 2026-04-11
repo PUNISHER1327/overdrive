@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Maximize2, ArrowRight, ArrowLeft, X, Play } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { getGallery } from '../../utils/dataStore';
+import { API_URL } from '../../config';
 
 const GalleryItem = ({ item, onImageClick }) => (
   <div
@@ -11,7 +12,7 @@ const GalleryItem = ({ item, onImageClick }) => (
     <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-1000">
       {item.type === 'video' ? (
         <video
-          src={item.url.startsWith('http') ? item.url : `http://localhost:8000${item.url}`}
+          src={item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`}
           className="w-full h-full object-cover opacity-100 transition-all duration-700 pointer-events-none"
           muted
           loop
@@ -20,7 +21,7 @@ const GalleryItem = ({ item, onImageClick }) => (
         />
       ) : (
         <img
-          src={item.url.startsWith('http') ? item.url : `http://localhost:8000${item.url}`}
+          src={item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`}
           className="w-full h-full object-cover opacity-100 transition-all duration-700 pointer-events-none shadow-2xl"
           alt={`Arena Gallery ${item.id}`}
         />
@@ -169,14 +170,14 @@ const Gallery = () => {
             >
               {selectedItem.type === 'video' ? (
                 <video
-                  src={selectedItem.url.startsWith('http') ? selectedItem.url : `http://localhost:8000${selectedItem.url}`}
+                  src={selectedItem.url.startsWith('http') ? selectedItem.url : `${API_URL}${selectedItem.url}`}
                   className="max-h-[85vh] rounded-2xl shadow-2xl shadow-primary/10 border border-white/10"
                   controls
                   autoPlay
                 />
               ) : (
                 <img
-                  src={selectedItem.url.startsWith('http') ? selectedItem.url : `http://localhost:8000${selectedItem.url}`}
+                  src={selectedItem.url.startsWith('http') ? selectedItem.url : `${API_URL}${selectedItem.url}`}
                   alt="Gallery Preview"
                   className="max-h-[85vh] w-auto object-contain rounded-2xl shadow-2xl shadow-primary/10 border border-white/10"
                 />

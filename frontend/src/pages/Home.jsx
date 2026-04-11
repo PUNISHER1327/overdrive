@@ -2,7 +2,8 @@ import Hero from '../components/sections/Hero'
 import SportsOfferings from '../components/sections/SportsOfferings'
 import BookingSystem from '../components/sections/BookingSystem'
 import Facilities from '../components/sections/Facilities'
- // import Events from '../components/sections/Events'
+import Events from '../components/sections/Events'
+
 import Gallery from '../components/sections/Gallery'
 import Testimonials from '../components/sections/Testimonials'
 import SubmitReview from '../components/sections/SubmitReview'
@@ -36,7 +37,8 @@ const Home = () => {
       {/* <BookingSystem /> */}
       <Facilities />
       <Gallery />
-       { /* <Events /> */ }
+      <Events />
+
       <Testimonials />
       <FindUs />
       <SubmitReview />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Send } from 'lucide-react';
+import { API_URL } from '../../config';
 
 const SubmitReview = () => {
     const [name, setName] = useState('');
@@ -15,7 +16,7 @@ const SubmitReview = () => {
         setMessage(null);
 
         try {
-            const response = await fetch('http://localhost:8000/api/reviews', {
+            const response = await fetch(`${API_URL}/api/reviews`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, comment, rating }),

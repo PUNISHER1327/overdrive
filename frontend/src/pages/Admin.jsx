@@ -2,8 +2,97 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X, Lock, Star, MessageSquare } from 'lucide-react';
 import { getEvents, setEvents, getGallery, setGallery, getRegistrations } from '../utils/dataStore';
+import { API_URL } from '../config';
+
+const CompetitionsPanel = ({ competitions, setCompetitions, handleUpdateCompetition, deleteCompetition, handleAddCompetition }) => {
+  const handleFieldChange = (id, field, value) => {
+    setCompetitions(prev => prev.map(c => c._id === id ? { ...c, [field]: value } : c));
+  };
+
+  return (
+    <div className="space-y-6">
+        <div className="flex justify-between items-center mb-6">
+            <div>
+               <h3 className="text-white font-bebas text-4xl tracking-widest text-primary">Competition Manager</h3>
+               <p className="text-white/50 text-sm font-dm">Add or update featured tournaments on the homepage slider.</p>
+            </div>
+        </div>
+
+        {competitions.map((comp) => (
+            <div key={comp._id} className="bg-[#111111] border border-[#1F1F1F] p-6 rounded-2xl relative overflow-hidden flex flex-col md:flex-row gap-8">
+                {/* Image Preview */}
+                <div className="w-full md:w-64 h-48 bg-[#080808] rounded-xl overflow-hidden shrink-0 border border-[#1A1A1A]">
+                   <img src={comp.img} className="w-full h-full object-cover opacity-80" alt="Preview"/>
+                </div>
+                
+                {/* Form Fields - Editable */}
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 font-dm">
+                    <div>
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-1">Event Title</label>
+                        <input 
+                          value={comp.title} 
+                          onChange={(e) => handleFieldChange(comp._id, 'title', e.target.value)} 
+                          className="w-full bg-[#1A1A1A] border border-[#222] text-white px-4 py-2.5 rounded-lg focus:ring-1 focus:ring-primary outline-none text-sm transition-all"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-1">Sport</label>
+                        <input 
+                          value={comp.sport} 
+                          onChange={(e) => handleFieldChange(comp._id, 'sport', e.target.value)} 
+                          className="w-full bg-[#1A1A1A] border border-[#222] text-white px-4 py-2.5 rounded-lg focus:ring-1 focus:ring-primary outline-none text-sm transition-all"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-1">Date</label>
+                        <input 
+                          value={comp.date} 
+                          onChange={(e) => handleFieldChange(comp._id, 'date', e.target.value)} 
+                          className="w-full bg-[#1A1A1A] border border-[#222] text-white px-4 py-2.5 rounded-lg focus:ring-1 focus:ring-primary outline-none text-sm transition-all"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-1">Prize Pool</label>
+                        <input 
+                          value={comp.prize} 
+                          onChange={(e) => handleFieldChange(comp._id, 'prize', e.target.value)} 
+                          className="w-full bg-[#1A1A1A] border border-[#222] text-white px-4 py-2.5 rounded-lg focus:ring-1 focus:ring-primary outline-none text-sm transition-all text-primary font-bold"
+                        />
+                    </div>
+                    <div className="md:col-span-2">
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-1">Background Image URL</label>
+                        <div className="flex gap-4">
+                          <input 
+                            value={comp.img} 
+                            onChange={(e) => handleFieldChange(comp._id, 'img', e.target.value)} 
+                            className="flex-1 bg-[#1A1A1A] border border-[#222] text-white px-4 py-2.5 rounded-lg focus:ring-1 focus:ring-primary outline-none text-xs transition-all"
+                            placeholder="https://..."
+                          />
+                          <button 
+                            onClick={() => handleUpdateCompetition(comp._id, comp)} 
+                            className="bg-primary/10 text-primary hover:bg-primary hover:text-black border border-primary/20 px-6 py-2 rounded-lg font-bold text-xs tracking-widest transition-all"
+                          >
+                            UPDATE
+                          </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button onClick={() => deleteCompetition(comp._id)} className="absolute top-6 right-6 text-white/20 hover:text-red-500 transition-colors">
+                    <Trash2 size={20} />
+                </button>
+            </div>
+        ))}
+        
+        <button onClick={handleAddCompetition} className="w-full border border-dashed border-[#1F1F1F] bg-[#0A0A0A] hover:bg-[#111111] text-white/50 hover:text-white transition-colors py-8 rounded-2xl flex flex-col items-center justify-center font-bebas text-2xl tracking-widest">
+            <Plus className="mb-2 text-primary" size={24} /> CREATE NEW COMPETITION
+        </button>
+    </div>
+  );
+};
 
 const Admin = () => {
+
   const [isAuthenticated, setIsAuthenticated] = useState(sessionStorage.getItem('od_admin_auth') === 'true');
   const [email, setEmail] = useState('admin@overdrive.com');
   const [password, setPassword] = useState('admin');
@@ -11,7 +100,8 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   
   // Data States
-  const [events, setLocalEvents] = useState([]);
+  const [competitions, setCompetitions] = useState([]);
+
   const [gallery, setLocalGallery] = useState([]);
   const [dbBookings, setDbBookings] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -19,7 +109,7 @@ const Admin = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin/dashboard', {
+      const response = await fetch(`${API_URL}/api/admin/dashboard`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
       });
       if(response.ok) setStats(await response.json());
@@ -28,7 +118,7 @@ const Admin = () => {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin/bookings', {
+      const response = await fetch(`${API_URL}/api/admin/bookings`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
       });
       if(response.ok) setDbBookings(await response.json());
@@ -40,7 +130,7 @@ const Admin = () => {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:8000/api/admin/auth/login', {
+      const response = await fetch(`${API_URL}/api/admin/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,12 +154,19 @@ const Admin = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/reviews/admin', {
+      const response = await fetch(`${API_URL}/api/reviews/admin`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
       });
       const json = await response.json();
       if(json.success) setReviews(json.data);
     } catch(err) { console.error(err) }
+  };
+
+  const fetchCompetitions = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/competitions`);
+      if (response.ok) setCompetitions(await response.json());
+    } catch (err) { console.error(err) }
   };
 
   // Fetch initial protected data
@@ -78,19 +175,18 @@ const Admin = () => {
       fetchDashboardStats();
       fetchBookings();
       fetchReviews();
+      fetchCompetitions();
     }
   }, [isAuthenticated]);
 
   // Fetch initial public components
   useEffect(() => {
-    setLocalEvents(getEvents());
     setLocalGallery(getGallery());
   }, []);
 
-  // --- EVENTS HANDLERS ---
-  const handleAddEvent = () => {
-    const newEvent = {
-        id: Date.now(),
+  // --- COMPETITIONS HANDLERS ---
+  const handleAddCompetition = async () => {
+    const newComp = {
         title: "NEW TOURNAMENT",
         sport: "SPORT",
         date: "TBD",
@@ -99,22 +195,48 @@ const Admin = () => {
         prize: "₹0",
         img: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=2000"
     };
-    setLocalEvents([...events, newEvent]);
+
+    try {
+      const response = await fetch(`${API_URL}/api/competitions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
+        },
+        body: JSON.stringify(newComp)
+      });
+      if (response.ok) fetchCompetitions();
+    } catch (err) { console.error(err) }
   };
 
-  const updateEvent = (index, field, value) => {
-    const newEvents = [...events];
-    newEvents[index][field] = value;
-    setLocalEvents(newEvents);
+  const deleteCompetition = async (id) => {
+    if (!window.confirm("Delete this competition?")) return;
+    try {
+      const response = await fetch(`${API_URL}/api/competitions/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
+      });
+      if (response.ok) fetchCompetitions();
+    } catch (err) { console.error(err) }
   };
 
-  const deleteEvent = (index) => {
-    setLocalEvents(events.filter((_, i) => i !== index));
-  };
-
-  const saveEvents = () => {
-    setEvents(events);
-    alert("Live Events updated successfully! They will now show up on the Homepage.");
+  const handleUpdateCompetition = async (id, updatedData) => {
+    try {
+      const response = await fetch(`${API_URL}/api/competitions/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
+        },
+        body: JSON.stringify(updatedData)
+      });
+      if (response.ok) {
+        alert('Competition updated successfully!');
+        fetchCompetitions();
+      } else {
+        alert('Failed to update competition');
+      }
+    } catch (err) { console.error(err) }
   };
 
   // --- GALLERY HANDLERS ---
@@ -150,7 +272,7 @@ const Admin = () => {
     formData.append('media', file);
 
     try {
-      const response = await fetch('http://localhost:8000/api/upload', {
+      const response = await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
@@ -184,7 +306,7 @@ const Admin = () => {
         const endTimeHour = parseInt(blockTime) + 1;
         const endTime = `${endTimeHour < 10 ? '0' : ''}${endTimeHour}:00`;
         
-        const res = await fetch('http://localhost:8000/api/admin/block-slot', {
+        const res = await fetch(`${API_URL}/api/admin/block-slot`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -288,60 +410,7 @@ const Admin = () => {
     </div>
   );
 
-  const EventsPanel = () => (
-    <div className="space-y-6">
-        <div className="flex justify-between items-center mb-6">
-            <div>
-               <h3 className="text-white font-bebas text-4xl tracking-widest">Digital Billboard Manager</h3>
-               <p className="text-white/50 text-sm font-dm">Add or update featured events on the homepage slider.</p>
-            </div>
-            <button onClick={saveEvents} className="bg-primary text-black flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm tracking-widest hover:bg-white transition-colors">
-                <Save size={16} /> PUBLISH CHANGES
-            </button>
-        </div>
 
-        {events.map((evt, idx) => (
-            <div key={evt.id} className="bg-[#111111] border border-[#1F1F1F] p-6 rounded-2xl relative overflow-hidden flex flex-col md:flex-row gap-8">
-                {/* Image Preview */}
-                <div className="w-full md:w-64 h-48 bg-[#080808] rounded-xl overflow-hidden shrink-0 border border-[#1A1A1A]">
-                   <img src={evt.img} className="w-full h-full object-cover opacity-80" alt="Preview"/>
-                </div>
-                
-                {/* Form Fields */}
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 font-dm">
-                    <div>
-                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Event Title</label>
-                        <input value={evt.title} onChange={(e) => updateEvent(idx, 'title', e.target.value)} className="w-full bg-[#1A1A1A] border-none text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary mt-1" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Background Image URL</label>
-                        <input value={evt.img} onChange={(e) => updateEvent(idx, 'img', e.target.value)} className="w-full bg-[#1A1A1A] border-none text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary mt-1" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Sport</label>
-                        <input value={evt.sport} onChange={(e) => updateEvent(idx, 'sport', e.target.value)} className="w-full bg-[#1A1A1A] border-none text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary mt-1" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Date</label>
-                        <input value={evt.date} onChange={(e) => updateEvent(idx, 'date', e.target.value)} className="w-full bg-[#1A1A1A] border-none text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary mt-1" />
-                    </div>
-                     <div>
-                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Prize Pool / Info</label>
-                        <input value={evt.prize} onChange={(e) => updateEvent(idx, 'prize', e.target.value)} className="w-full bg-[#1A1A1A] border-none text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary mt-1" />
-                    </div>
-                </div>
-
-                <button onClick={() => deleteEvent(idx)} className="absolute top-6 right-6 text-white/20 hover:text-red-500 transition-colors">
-                    <Trash2 size={20} />
-                </button>
-            </div>
-        ))}
-        
-        <button onClick={handleAddEvent} className="w-full border border-dashed border-[#1F1F1F] bg-[#0A0A0A] hover:bg-[#111111] text-white/50 hover:text-white transition-colors py-8 rounded-2xl flex flex-col items-center justify-center font-bebas text-2xl tracking-widest">
-            <Plus className="mb-2 text-primary" size={24} /> ADD NEW EVENT
-        </button>
-    </div>
-  );
 
   const GalleryPanel = () => (
     <div className="space-y-6">
@@ -362,7 +431,7 @@ const Admin = () => {
                     <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-1000">
                       {item.type === 'video' ? (
                         <video
-                          src={item.url.startsWith('http') ? item.url : `http://localhost:8000${item.url}`}
+                          src={item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`}
                           className="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700 pointer-events-none"
                           muted
                           loop
@@ -371,7 +440,7 @@ const Admin = () => {
                         />
                       ) : (
                         <img
-                          src={item.url.startsWith('http') ? item.url : `http://localhost:8000${item.url}`}
+                          src={item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`}
                           className="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700 pointer-events-none shadow-2xl"
                           alt={`Arena Gallery ${item.id}`}
                         />
@@ -436,7 +505,7 @@ const Admin = () => {
   const ReviewsPanel = () => {
     const toggleApproval = async (id, currentStatus) => {
       try {
-        const res = await fetch(`http://localhost:8000/api/reviews/${id}`, {
+        const res = await fetch(`${API_URL}/api/reviews/${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -451,7 +520,7 @@ const Admin = () => {
     const deleteReview = async (id) => {
       if(!window.confirm("Are you sure you want to delete this review?")) return;
       try {
-        const res = await fetch(`http://localhost:8000/api/reviews/${id}`, {
+        const res = await fetch(`${API_URL}/api/reviews/${id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
         });
@@ -580,9 +649,10 @@ const Admin = () => {
             <button onClick={() => setActiveTab('bookings')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'bookings' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <Users size={18} /> Bookings
             </button>
-{/* <button onClick={() => setActiveTab('events')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'events' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
-                <CalendarDays size={18} /> Upcoming Series
-            </button> */}
+            <button onClick={() => setActiveTab('competitions')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'competitions' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
+                <CalendarDays size={18} /> Competitions
+            </button>
+
             <button onClick={() => setActiveTab('gallery')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'gallery' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <ImageIcon size={18} /> Gallery Media
             </button>
@@ -611,7 +681,8 @@ const Admin = () => {
                 <option value="bookings">Bookings</option>
                 <option value="gallery">Gallery</option>
                 <option value="reviews">Reviews</option>
-                {/* <option value="events">Events</option> */}
+                 <option value="competitions">Competitions</option>
+
             </select>
          </div>
 
@@ -627,7 +698,8 @@ const Admin = () => {
                  >
                      {activeTab === 'dashboard' && <DashboardPanel />}
                      {activeTab === 'bookings' && <BookingsPanel />}
-                     {/* {activeTab === 'events' && <EventsPanel />} */}
+                     {activeTab === 'competitions' && <CompetitionsPanel competitions={competitions} setCompetitions={setCompetitions} handleUpdateCompetition={handleUpdateCompetition} deleteCompetition={deleteCompetition} handleAddCompetition={handleAddCompetition} />}
+
                      {activeTab === 'gallery' && <GalleryPanel />}
                      {activeTab === 'reviews' && <ReviewsPanel />}
                  </motion.div>

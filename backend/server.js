@@ -12,6 +12,8 @@ import adminAuthRoutes from "./routes/adminAuthRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import competitionRoutes from "./routes/competitionRoutes.js";
+
 
 const app = express();
 
@@ -39,6 +41,8 @@ app.use("/api/admin/auth", adminAuthRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/competitions", competitionRoutes);
+
 
 const PORT = process.env.PORT || 8000;
 

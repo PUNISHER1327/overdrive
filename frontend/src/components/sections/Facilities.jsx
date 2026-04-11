@@ -8,14 +8,14 @@ const facilities = [
     title: "Premium Lighting",
     desc: "Daylight-simulating floodlights for perfect visibility. Never lose sight of the ball, whether it's midnight or early morning.",
     tags: ["Anti-glare", "Floodlights", "Zero Shadows"],
-    image: "/turf.jpg"
+    image: "/light-turf.png"
   },
   {
     id: 2,
     title: "Pro Turfs",
     desc: "FIFA-standard artificial grass for maximum performance, injury prevention, and the ultimate stadium feel.",
     tags: ["FIFA Approved", "5v5 Size", "All-weather"],
-    image: "https://images.unsplash.com/photo-1589487391730-58f20eb2c308?auto=format&fit=crop&q=80&w=800"
+    image: "/turf.jpg"
   },
   {
     id: 3,
