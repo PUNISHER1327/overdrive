@@ -7,12 +7,12 @@ const headlines = [
   {
     range: [0, 0.50],
     heading: "THE ARENA AWAITS",
-    sub: "Jammu's premier outdoor sports facility"
+    sub: "Jammu's premier 5v5 indoor sports facility"
   },
   {
     range: [0.50, 1.00],
     heading: "PLAY. COMPETE. DOMINATE.",
-    sub: "Book your slot today at Overdrive Arena"
+    sub: "Book your 5v5 slot today at Overdrive Arena"
   }
 ];
 

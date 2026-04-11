@@ -31,9 +31,17 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        {/* Logo */}
-        <Link to="/" className="font-bebas text-3xl tracking-wider text-primary">
-          OVERDRIVE ARENA
+        <Link to="/" className="flex items-center gap-4 group">
+          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary group-hover:border-white transition-all duration-500 shrink-0">
+            <img 
+              src="/logo.jpg" 
+              alt="Overdrive Logo" 
+              className="w-full h-full object-cover scale-[1.6] contrast-[1.1] brightness-[1.1]" 
+            />
+          </div>
+          <span className="font-bebas text-4xl tracking-wider text-primary group-hover:text-white transition-colors duration-500">
+            OVERDRIVE ARENA
+          </span>
         </Link>
 
         {/* Desktop Nav Links */}

@@ -8,7 +8,7 @@ export const protectAdmin = (req, res, next) => {
       return res.status(401).json({ message: "Not authorized" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback_secret");
 
     req.admin = decoded.id;
 

@@ -6,37 +6,37 @@ const facilities = [
   {
     id: 1,
     title: "Premium Lighting",
-    desc: "Daylight-simulating floodlights for perfect visibility 24/7. Never lose sight of the ball, whether it's midnight or early morning.",
-    tags: ["Anti-glare", "24/7 Visibility", "Zero Shadows"],
-    image: "https://images.unsplash.com/photo-1671209151455-86980f5bf293?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bGlnaHRpbmclMjBpbiUyMHR1cmZ8ZW58MHx8MHx8fDA%3D"
+    desc: "Daylight-simulating floodlights for perfect visibility. Never lose sight of the ball, whether it's midnight or early morning.",
+    tags: ["Anti-glare", "Floodlights", "Zero Shadows"],
+    image: "/turf.jpg"
   },
   {
     id: 2,
     title: "Pro Turfs",
     desc: "FIFA-standard artificial grass for maximum performance, injury prevention, and the ultimate stadium feel.",
-    tags: ["FIFA Approved", "Impact Absorption", "All-weather"],
+    tags: ["FIFA Approved", "5v5 Size", "All-weather"],
     image: "https://images.unsplash.com/photo-1589487391730-58f20eb2c308?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 3,
     title: "Prime Location",
-    desc: "Easy access at Kamla Palace Road with ample, secure parking space for all players and spectators.",
-    tags: ["Kamla Palace Road", "Ample Parking", "24/7 Security"],
+    desc: "Easy access at Kamla Palace Road with secure, ample parking available for all players and spectators.",
+    tags: ["Kamla Palace Road", "Parking Available", "24/7 Security"],
     image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 4,
+    title: "Amenities",
+    desc: "Clean, well-maintained washrooms and changing facilities to ensure a comfortable experience for every athlete.",
+    tags: ["Washrooms Available", "Changing Rooms", "Clean Facility"],
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: 5,
     title: "Easy Booking",
     desc: "Book your favorite slot in seconds via Hudle or WhatsApp without any hassle or waiting in lines.",
     tags: ["Hudle Integration", "WhatsApp Booking", "Instant Confirmation"],
     image: "https://images.unsplash.com/photo-1649433391719-2e784576d044?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Ym9va2luZ3xlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 5,
-    title: "Tournaments",
-    desc: "Regular high-stakes leagues and amateur championships across all sports to test your skills.",
-    tags: ["Corporate Leagues", "Cash Prizes", "Pro Referees"],
-    image: "https://images.unsplash.com/photo-1761644789725-98e84ef4b8c8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dG91cm5hbWVudHN8ZW58MHx8MHx8fDA%3D"
   }
 ];
 

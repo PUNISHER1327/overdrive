@@ -44,22 +44,14 @@ const DEFAULT_EVENTS = [
 ];
 
 const DEFAULT_GALLERY = [
-    { id: 1, size: "md:col-span-2 md:row-span-2", url: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1200" },
-    { id: 2, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1551280857-2b9ebf241ac2?q=80&w=800" },
-    { id: 3, size: "md:col-span-1 md:row-span-2", url: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=800" },
-    { id: 4, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1518605368461-1e12522201c1?q=80&w=800" },
-    { id: 5, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800" },
-    { id: 6, size: "md:col-span-2 md:row-span-1", url: "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=1200" },
-    { id: 7, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1508344928928-7137b2fdeea0?q=80&w=800" },
-    { id: 8, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1574629810360-7efbf5ce0063?q=80&w=800" },
-    { id: 9, size: "md:col-span-2 md:row-span-2", url: "https://images.unsplash.com/photo-1518605368461-1e12522201c1?q=80&w=1200" },
-    { id: 10, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=800" },
-    { id: 11, size: "md:col-span-1 md:row-span-2", url: "https://images.unsplash.com/photo-1551280857-2b9ebf241ac2?q=80&w=800" },
-    { id: 12, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1508344928928-7137b2fdeea0?q=80&w=800" },
-    { id: 13, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1574629810360-7efbf5ce0063?q=80&w=800" },
-    { id: 14, size: "md:col-span-2 md:row-span-1", url: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=1200" },
-    { id: 15, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=800" },
-    { id: 16, size: "md:col-span-1 md:row-span-1", url: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=800" },
+    { id: 1, type: "video", url: "https://assets.mixkit.co/videos/preview/mixkit-girl-playing-with-a-soccer-ball-487-large.mp4" },
+    { id: 2, type: "image", url: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=1000&auto=format&fit=crop" },
+    { id: 3, type: "video", url: "https://assets.mixkit.co/videos/preview/mixkit-stadium-lights-at-night-422-large.mp4" },
+    { id: 4, type: "image", url: "https://images.unsplash.com/photo-1518605368461-1e12522201c1?q=80&w=1000&auto=format&fit=crop" },
+    { id: 5, type: "video", url: "https://assets.mixkit.co/videos/preview/mixkit-young-man-playing-basketball-in-an-outdoor-court-4645-large.mp4" },
+    { id: 6, type: "image", url: "https://images.unsplash.com/photo-1574629810360-7efbf5ce0063?q=80&w=1000&auto=format&fit=crop" },
+    { id: 7, type: "video", url: "https://assets.mixkit.co/videos/preview/mixkit-basketball-player-doing-a-slam-dunk-2358-large.mp4" },
+    { id: 8, type: "image", url: "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=1000&auto=format&fit=crop" },
 ];
 
 export const getEvents = () => {

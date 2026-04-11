@@ -3,10 +3,39 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, Phone, CheckCircle2, ChevronRight } from 'lucide-react';
 
 const sportsList = ['Football', 'Cricket', 'Badminton', 'Pickleball'];
-const timeSlots = [
-  '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-  '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
-];
+
+const getSlotsForDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDay();
+  const isWeekend = day === 0 || day === 6; // Sunday = 0, Saturday = 6
+
+  const start = isWeekend ? 6 : 7;
+  const end = isWeekend ? 26 : 24; // 24 = 12 AM, 26 = 2 AM (next day)
+
+  const slots = [];
+  for (let i = start; i < end; i += 0.5) {
+    const hour = Math.floor(i) % 24;
+    const minutes = i % 1 === 0 ? "00" : "30";
+    slots.push(`${hour < 10 ? '0' : ''}${hour}:${minutes}`);
+  }
+  return slots;
+};
+
+const calculatePrice = (dateString, slot) => {
+  if (!slot) return 0;
+  const date = new Date(dateString);
+  const day = date.getDay();
+  const isWeekend = day === 0 || day === 6;
+  const hour = parseInt(slot.split(':')[0]);
+
+  let hourlyPrice;
+  if (isWeekend) {
+    hourlyPrice = hour < 18 && hour >= 6 ? 1350 : 1500;
+  } else {
+    hourlyPrice = hour < 18 && hour >= 7 ? 1200 : 1350;
+  }
+  return hourlyPrice / 2;
+};
 
 const BookingSystem = () => {
   const [selectedSport, setSelectedSport] = useState(sportsList[0]);
@@ -45,8 +74,14 @@ const BookingSystem = () => {
   setBookingStatus('loading');
 
   try {
-    const endTimeHour = parseInt(selectedSlot) + 1;
-    const endTime = `${endTimeHour < 10 ? '0' : ''}${endTimeHour}:00`;
+    const [h, m] = selectedSlot.split(':').map(Number);
+    let endHour = h;
+    let endMinute = m + 30;
+    if (endMinute >= 60) {
+      endHour = (endHour + 1) % 24;
+      endMinute = 0;
+    }
+    const endTime = `${endHour < 10 ? '0' : ''}${endHour}:${endMinute === 0 ? '00' : '30'}`;
 
     const data = {
       name: bookingDetails.name,
@@ -54,7 +89,7 @@ const BookingSystem = () => {
       date: selectedDate,
       startTime: selectedSlot,
       endTime: endTime,
-      amount: 1000,
+      amount: calculatePrice(selectedDate, selectedSlot),
     };
 
     // ✅ CALL CREATE ORDER
@@ -183,7 +218,7 @@ const openRazorpay = (order, bookingId) => {
             transition={{ delay: 0.1 }}
             className="font-dm text-white/60 text-lg max-w-xl mt-4"
           >
-            Select your sport, pick a time, and secure your arena in seconds. Real-time availability from 9 AM to 9 PM.
+            Select your sport, pick a time, and secure your arena in seconds. Real-time availability from 6 AM to 2 AM.
           </motion.p>
         </div>
 
@@ -259,10 +294,10 @@ const openRazorpay = (order, bookingId) => {
                 <div>
                   <h3 className="font-bebas tracking-wide text-2xl text-white/90 mb-4 flex items-center gap-2">
                     <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs">3</span> 
-                    Available Slots (1hr)
+                    Available Slots (30min)
                   </h3>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                    {timeSlots.map(slot => {
+                    {getSlotsForDate(selectedDate).map(slot => {
                       const isBooked = bookedSlots.includes(slot);
                       return (
                         <button
@@ -309,7 +344,8 @@ const openRazorpay = (order, bookingId) => {
                       <div className="text-white font-bebas text-2xl tracking-wide">{selectedSport}</div>
                     </div>
                     <div className="text-right">
-                       <div className="text-primary font-dm text-xl font-bold">1 Hr</div>
+                       <div className="text-primary font-dm text-xl font-bold">₹{calculatePrice(selectedDate, selectedSlot)}</div>
+                       <div className="text-white/30 font-dm text-[10px] uppercase font-bold">Per Slot</div>
                     </div>
                  </div>
                  
@@ -320,7 +356,13 @@ const openRazorpay = (order, bookingId) => {
                     </div>
                     <div>
                       <div className="text-white/40 font-dm text-xs uppercase tracking-widest font-bold mb-1">Time</div>
-                      <div className="text-white font-dm text-sm font-medium">{selectedSlot ? `${selectedSlot} - ${parseInt(selectedSlot) + 1}:00` : 'Not selected'}</div>
+                      <div className="text-white font-dm text-sm font-medium">{selectedSlot ? `${selectedSlot} - ${(() => {
+                        const [h, m] = selectedSlot.split(':').map(Number);
+                        let eh = h;
+                        let em = m + 30;
+                        if (em >= 60) { eh = (eh + 1) % 24; em = 0; }
+                        return `${eh < 10 ? '0' : ''}${eh}:${em === 0 ? '00' : '30'}`;
+                      })()}` : 'Not selected'}</div>
                     </div>
                  </div>
                </div>

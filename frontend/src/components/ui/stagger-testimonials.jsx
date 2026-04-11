@@ -1,18 +1,15 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const SQRT_5000 = Math.sqrt(5000);
 
-const testimonials = [
-  { tempId: 0, by: "Rahul Sharma, Football MVP", testimonial: "The best turf in Jammu. The lighting is incredible and the atmosphere is always electric.", imgSrc: "https://i.pravatar.cc/150?img=11" },
-  { tempId: 1, by: "Amit Mehra, Box Cricket", testimonial: "Overdrive has completely changed the way we play box cricket. Pro-grade facilities!", imgSrc: "https://i.pravatar.cc/150?img=12" },
-  { tempId: 2, by: "Sneha Gupta, Badminton", testimonial: "Safe, clean, and top-notch courts. Highly recommend for women's sessions too.", imgSrc: "https://i.pravatar.cc/150?img=5" },
-  { tempId: 3, by: "Vikram Singh, Pickleball", testimonial: "First place in Jammu offering Pickleball. The energy here is just different.", imgSrc: "https://i.pravatar.cc/150?img=14" },
-  { tempId: 4, by: "Sameer Tak, Football", testimonial: "Amazing experience! The staff is friendly and the booking process is seamless.", imgSrc: "https://i.pravatar.cc/150?img=15" },
-  { tempId: 5, by: "Ishaan Kohli, Box Cricket", testimonial: "The stadium energy is real. Playing here feels like being in a professional league.", imgSrc: "https://i.pravatar.cc/150?img=68" }
+const featuredTestimonials = [
+  { tempId: 'f0', by: "Rahul Sharma, Football MVP", testimonial: "The best turf in Jammu. The lighting is incredible and the atmosphere is always electric.", imgSrc: "https://i.pravatar.cc/150?img=11", rating: 5 },
+  { tempId: 'f1', by: "Amit Mehra, Box Cricket", testimonial: "Overdrive has completely changed the way we play box cricket. Pro-grade facilities!", imgSrc: "https://i.pravatar.cc/150?img=12", rating: 5 },
+  { tempId: 'f2', by: "Sneha Gupta, Badminton", testimonial: "Safe, clean, and top-notch courts. Highly recommend for women's sessions too.", imgSrc: "https://i.pravatar.cc/150?img=5", rating: 5 },
 ];
 
 const TestimonialCard = ({ 
@@ -54,17 +51,24 @@ const TestimonialCard = ({
           height: 2
         }}
       />
-      <img
-        src={testimonial.imgSrc}
-        alt={`${testimonial.by.split(',')[0]}`}
-        className="mb-4 h-14 w-12 bg-[#080808] object-cover object-top filter grayscale"
-        style={{
-          boxShadow: "3px 3px 0px #080808"
-        }}
-      />
+      <div className="flex justify-between items-start mb-4">
+        <img
+          src={testimonial.imgSrc}
+          alt={`${testimonial.by.split(',')[0]}`}
+          className="h-14 w-12 bg-[#080808] object-cover object-top filter grayscale"
+          style={{
+            boxShadow: "3px 3px 0px #080808"
+          }}
+        />
+        <div className="flex gap-1">
+          {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
+            <Star key={i} size={14} fill="currentColor" className={isCenter ? "text-black/40" : "text-primary/40"} />
+          ))}
+        </div>
+      </div>
       <h3 className={cn(
-        "text-xl sm:text-3xl font-bebas tracking-wide leading-tight",
-        isCenter ? "text-black" : "text-white"
+        "text-xl sm:text-2xl md:text-3xl font-bebas tracking-wide leading-tight",
+        isCenter ? "text-black font-black" : "text-white"
       )}>
         "{testimonial.testimonial}"
       </h3>
@@ -80,9 +84,44 @@ const TestimonialCard = ({
 
 export const StaggerTestimonials = () => {
   const [cardSize, setCardSize] = useState(365);
-  const [testimonialsList, setTestimonialsList] = useState(testimonials);
+  const [testimonialsList, setTestimonialsList] = useState([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/reviews');
+        const json = await response.json();
+        
+        if (json.success && json.data.length > 0) {
+          // Map DB reviews to carousel format
+          const mappedReviews = json.data.map((r, i) => ({
+            tempId: r._id,
+            by: r.name,
+            testimonial: r.comment,
+            imgSrc: r.imgSrc,
+            rating: r.rating
+          }));
+          
+          // Combine with some featured ones if list is short
+          if (mappedReviews.length < 3) {
+            setTestimonialsList([...mappedReviews, ...featuredTestimonials]);
+          } else {
+            setTestimonialsList(mappedReviews);
+          }
+        } else {
+          setTestimonialsList(featuredTestimonials);
+        }
+      } catch (err) {
+        console.error("Failed to fetch reviews:", err);
+        setTestimonialsList(featuredTestimonials);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   const handleMove = (steps) => {
+    if (testimonialsList.length === 0) return;
     const newList = [...testimonialsList];
     if (steps > 0) {
       for (let i = steps; i > 0; i--) {
@@ -111,15 +150,18 @@ export const StaggerTestimonials = () => {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
+  if (testimonialsList.length === 0) return null;
+
   return (
     <div
       className="relative w-full overflow-hidden bg-transparent"
       style={{ height: 600 }}
     >
       {testimonialsList.map((testimonial, index) => {
-        const position = testimonialsList.length % 2
-          ? index - (testimonialsList.length + 1) / 2
-          : index - testimonialsList.length / 2;
+        // Handle varying list sizes for position logic
+        const mid = Math.floor(testimonialsList.length / 2);
+        const position = index - mid;
+        
         return (
           <TestimonialCard
             key={testimonial.tempId}
@@ -157,3 +199,4 @@ export const StaggerTestimonials = () => {
     </div>
   );
 };
+

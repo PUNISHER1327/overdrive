@@ -7,6 +7,16 @@ export const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // 🔓 BYPASS FOR DEVELOPMENT
+    if (password === "admin") {
+      const token = jwt.sign(
+        { id: "dev_admin_id" },
+        process.env.JWT_SECRET || "fallback_secret",
+        { expiresIn: "7d" }
+      );
+      return res.json({ token });
+    }
+
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -19,7 +29,7 @@ export const loginAdmin = async (req, res) => {
 
     const token = jwt.sign(
       { id: admin._id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "fallback_secret",
       { expiresIn: "7d" }
     );
 

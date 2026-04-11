@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X, Lock } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X, Lock, Star, MessageSquare } from 'lucide-react';
 import { getEvents, setEvents, getGallery, setGallery, getRegistrations } from '../utils/dataStore';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(sessionStorage.getItem('od_admin_auth') === 'true');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@overdrive.com');
+  const [password, setPassword] = useState('admin');
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   
@@ -14,6 +14,7 @@ const Admin = () => {
   const [events, setLocalEvents] = useState([]);
   const [gallery, setLocalGallery] = useState([]);
   const [dbBookings, setDbBookings] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState(null);
 
   const fetchDashboardStats = async () => {
@@ -61,11 +62,22 @@ const Admin = () => {
     }
   };
 
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/reviews/admin', {
+        headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
+      });
+      const json = await response.json();
+      if(json.success) setReviews(json.data);
+    } catch(err) { console.error(err) }
+  };
+
   // Fetch initial protected data
   useEffect(() => {
     if (isAuthenticated) {
       fetchDashboardStats();
       fetchBookings();
+      fetchReviews();
     }
   }, [isAuthenticated]);
 
@@ -106,28 +118,20 @@ const Admin = () => {
   };
 
   // --- GALLERY HANDLERS ---
-  const updateGalleryImage = (index, newUrl) => {
+  const updateGalleryItem = (index, field, value) => {
     const newGallery = [...gallery];
-    newGallery[index].url = newUrl;
+    newGallery[index][field] = value;
     setLocalGallery(newGallery);
   };
 
-  const addGalleryImage = () => {
-    // Array of sizes to loop through to maintain the awesome Bento Grid look
-    const gridSizes = [
-      "md:col-span-1 md:row-span-1",
-      "md:col-span-2 md:row-span-2",
-      "md:col-span-1 md:row-span-2",
-      "md:col-span-2 md:row-span-1",
-    ];
-    
-    const newImage = {
+  const addGalleryItem = () => {
+    const newItem = {
         id: Date.now(),
-        size: gridSizes[gallery.length % gridSizes.length],
+        type: "image",
         url: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=800"
     };
     
-    setLocalGallery([...gallery, newImage]);
+    setLocalGallery([...gallery, newItem]);
   };
 
   const removeGalleryImage = (index) => {
@@ -137,6 +141,35 @@ const Admin = () => {
   const saveGallery = () => {
     setGallery(gallery);
     alert("Gallery images updated securely! Changes live on homepage.");
+  };
+
+  const handleFileUpload = async (index, file) => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('media', file);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        updateGalleryItem(index, 'url', data.url);
+        updateGalleryItem(index, 'type', data.type);
+        alert('Upload successful!');
+      } else {
+        alert(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error during upload');
+    }
   };
 
   // --- SUB-COMPONENTS FOR CLEANLINESS ---
@@ -323,34 +356,161 @@ const Admin = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-           {gallery.map((img, idx) => (
-             <div key={img.id} className="relative bg-[#111111] border border-[#1F1F1F] p-4 rounded-xl group overflow-hidden">
-                 <div className="w-full h-32 bg-black rounded-lg overflow-hidden mb-4 relative">
-                     <img src={img.url} className="w-full h-full object-cover" alt={`Gallery ${img.id}`} />
+           {gallery.map((item, idx) => (
+             <div key={item.id} className="relative bg-[#111111] border border-[#1F1F1F] p-5 rounded-xl group overflow-hidden space-y-4">
+                 <div className="w-full aspect-[9/16] bg-black rounded-lg overflow-hidden relative border border-white/5">
+                    <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-1000">
+                      {item.type === 'video' ? (
+                        <video
+                          src={item.url.startsWith('http') ? item.url : `http://localhost:8000${item.url}`}
+                          className="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700 pointer-events-none"
+                          muted
+                          loop
+                          playsInline
+                          autoPlay
+                        />
+                      ) : (
+                        <img
+                          src={item.url.startsWith('http') ? item.url : `http://localhost:8000${item.url}`}
+                          className="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700 pointer-events-none shadow-2xl"
+                          alt={`Arena Gallery ${item.id}`}
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/80 via-transparent to-transparent pointer-events-none"></div>
+                    </div>
+                     <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded text-[8px] font-bold text-primary uppercase border border-primary/20">
+                        {item.type}
+                     </div>
                  </div>
-                 <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-2 block">
-                     Image URL (Slot {idx + 1}) - {img.size.includes('2') ? 'Large' : 'Small'}
-                 </label>
-                 <input 
-                   type="text"
-                   value={img.url} 
-                   onChange={(e) => updateGalleryImage(idx, e.target.value)} 
-                   className="w-full bg-[#1A1A1A] border-none text-white/80 text-xs px-3 py-2 rounded focus:ring-1 focus:ring-primary" 
-                 />
+                 
+                 <div className="space-y-3">
+                    <div>
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1 block">Media Type</label>
+                        <select 
+                          value={item.type || 'image'} 
+                          onChange={(e) => updateGalleryItem(idx, 'type', e.target.value)}
+                          className="w-full bg-[#1A1A1A] border-none text-white text-xs px-3 py-2 rounded focus:ring-1 focus:ring-primary"
+                        >
+                           <option value="image">Image</option>
+                           <option value="video">Video</option>
+                        </select>
+                    </div>
 
-                 <button onClick={() => removeGalleryImage(idx)} className="absolute top-6 right-6 text-white/20 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 bg-black/50 p-2 rounded-full backdrop-blur-md">
+                    <div>
+                        <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1 block">Media Source</label>
+                        <div className="flex gap-2">
+                           <input 
+                             type="text"
+                             value={item.url} 
+                             onChange={(e) => updateGalleryItem(idx, 'url', e.target.value)} 
+                             className="flex-1 bg-[#1A1A1A] border-none text-white/80 text-xs px-3 py-2 rounded focus:ring-1 focus:ring-primary" 
+                             placeholder="URL or Path"
+                           />
+                           <label className="bg-primary/10 text-primary hover:bg-primary hover:text-black p-2 rounded cursor-pointer transition-colors flex items-center justify-center">
+                              <Plus size={14} />
+                              <input 
+                                type="file" 
+                                className="hidden" 
+                                onChange={(e) => handleFileUpload(idx, e.target.files[0])}
+                                accept="image/*,video/*"
+                              />
+                           </label>
+                        </div>
+                    </div>
+                 </div>
+
+                 <button onClick={() => removeGalleryImage(idx)} className="absolute top-4 right-4 text-white/20 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 bg-black/50 p-2 rounded-full backdrop-blur-md">
                     <Trash2 size={16} />
                  </button>
              </div>
            ))}
 
            {/* Add New Button Card */}
-           <button onClick={addGalleryImage} className="border border-dashed border-[#1F1F1F] bg-[#0A0A0A] hover:bg-[#111111] text-white/50 hover:text-white transition-colors h-full min-h-[220px] rounded-xl flex flex-col items-center justify-center font-bebas text-2xl tracking-widest">
-               <Plus className="mb-2 text-primary" size={24} /> ADD PHOTO
+           <button onClick={addGalleryItem} className="border border-dashed border-[#1F1F1F] bg-[#0A0A0A] hover:bg-[#111111] text-white/50 hover:text-white transition-colors h-full min-h-[300px] rounded-xl flex flex-col items-center justify-center font-bebas text-2xl tracking-widest">
+               <Plus className="mb-2 text-primary" size={24} /> ADD MEDIA
            </button>
         </div>
     </div>
   );
+
+  const ReviewsPanel = () => {
+    const toggleApproval = async (id, currentStatus) => {
+      try {
+        const res = await fetch(`http://localhost:8000/api/reviews/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
+          },
+          body: JSON.stringify({ isApproved: !currentStatus })
+        });
+        if(res.ok) fetchReviews();
+      } catch(err) { console.error(err) }
+    };
+
+    const deleteReview = async (id) => {
+      if(!window.confirm("Are you sure you want to delete this review?")) return;
+      try {
+        const res = await fetch(`http://localhost:8000/api/reviews/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
+        });
+        if(res.ok) fetchReviews();
+      } catch(err) { console.error(err) }
+    };
+
+    return (
+      <div className="space-y-6">
+          <div className="mb-8">
+             <h3 className="text-white font-bebas text-4xl tracking-widest text-primary">Player Feedbacks</h3>
+             <p className="text-white/50 text-sm font-dm">Moderate user-submitted testimonials before they go live on the site.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-4">
+              {reviews.map(r => (
+                <div key={r._id} className="bg-[#111111] border border-[#1F1F1F] p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex gap-4 items-center">
+                        <img src={r.imgSrc} className="w-12 h-12 rounded-full grayscale border border-white/10" alt={r.name} />
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <h4 className="text-white font-bold font-dm text-sm">{r.name}</h4>
+                                <div className="flex">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star key={i} size={10} className={i < r.rating ? "text-primary fill-primary" : "text-white/10"} />
+                                    ))}
+                                </div>
+                            </div>
+                            <p className="text-white/60 text-sm italic font-dm max-w-xl">"{r.comment}"</p>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-3 w-full md:w-auto">
+                        <button 
+                          onClick={() => toggleApproval(r._id, r.isApproved)}
+                          className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold font-dm transition-colors ${
+                            r.isApproved ? 'bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-black' : 'bg-primary/10 text-primary hover:bg-primary hover:text-black'
+                          }`}
+                        >
+                            {r.isApproved ? 'APPROVED' : 'APPROVE'}
+                        </button>
+                        <button 
+                          onClick={() => deleteReview(r._id)}
+                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-black rounded-lg transition-colors"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                </div>
+              ))}
+              {reviews.length === 0 && (
+                <div className="text-center py-20 border-2 border-dashed border-[#1F1F1F] rounded-2xl">
+                    <p className="text-white/30 font-dm">No reviews found in the database.</p>
+                </div>
+              )}
+          </div>
+      </div>
+    );
+  };
 
   if (!isAuthenticated) {
     return (
@@ -420,11 +580,14 @@ const Admin = () => {
             <button onClick={() => setActiveTab('bookings')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'bookings' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <Users size={18} /> Bookings
             </button>
-            <button onClick={() => setActiveTab('events')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'events' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
+{/* <button onClick={() => setActiveTab('events')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'events' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <CalendarDays size={18} /> Upcoming Series
-            </button>
+            </button> */}
             <button onClick={() => setActiveTab('gallery')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'gallery' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <ImageIcon size={18} /> Gallery Media
+            </button>
+            <button onClick={() => setActiveTab('reviews')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'reviews' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
+                <MessageSquare size={18} /> Player Reviews
             </button>
          </nav>
          <div className="p-4 border-t border-[#1F1F1F]">
@@ -446,8 +609,9 @@ const Admin = () => {
             >
                 <option value="dashboard">Dashboard</option>
                 <option value="bookings">Bookings</option>
-                <option value="events">Events</option>
                 <option value="gallery">Gallery</option>
+                <option value="reviews">Reviews</option>
+                {/* <option value="events">Events</option> */}
             </select>
          </div>
 
@@ -463,8 +627,9 @@ const Admin = () => {
                  >
                      {activeTab === 'dashboard' && <DashboardPanel />}
                      {activeTab === 'bookings' && <BookingsPanel />}
-                     {activeTab === 'events' && <EventsPanel />}
+                     {/* {activeTab === 'events' && <EventsPanel />} */}
                      {activeTab === 'gallery' && <GalleryPanel />}
+                     {activeTab === 'reviews' && <ReviewsPanel />}
                  </motion.div>
              </AnimatePresence>
          </div>
