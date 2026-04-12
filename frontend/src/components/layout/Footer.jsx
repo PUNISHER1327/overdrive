@@ -79,7 +79,6 @@ const Footer = () => {
               
               {/* Socials */}
               <div className="flex gap-8">
-                 <a href="https://twitter.com/overdrive_arena" target="_blank" className="font-dm text-[11px] font-bold uppercase tracking-widest text-black hover:text-white transition-colors">TWITTER</a>
                  <a href="https://instagram.com/overdrive_arena" target="_blank" className="font-dm text-[11px] font-bold uppercase tracking-widest text-black hover:text-white transition-colors">INSTAGRAM</a>
                  <a href="https://wa.me/917051107301" target="_blank" className="font-dm text-[11px] font-bold uppercase tracking-widest text-black hover:text-white transition-colors">WHATSAPP</a>
               </div>

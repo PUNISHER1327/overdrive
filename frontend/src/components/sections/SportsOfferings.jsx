@@ -49,7 +49,7 @@ const SportsOfferings = () => {
           >
              <div>
                 <h3 className="font-dm text-4xl md:text-5xl text-black font-medium tracking-tight leading-tight">
-                  Premium<br />Football
+                  <br />Football
                 </h3>
                 <p className="font-dm text-black/70 mt-6 text-sm font-medium pr-4 leading-relaxed">
                   FIFA-standard artificial turf designed for clinical finishing, ultimate control, and high-stakes matches.
@@ -95,7 +95,7 @@ const SportsOfferings = () => {
 
              <div className="relative z-10">
                <h3 className="font-dm text-4xl md:text-[2.75rem] text-white font-medium tracking-tight leading-none w-4/5 pt-12">
-                 Pro Box Cricket
+                Box Cricket
                </h3>
                <p className="text-white/90 font-dm text-sm mt-4 w-4/5 font-medium">
                  The ultimate short-format pitch.
@@ -109,20 +109,7 @@ const SportsOfferings = () => {
             className="lg:col-span-2 bg-[#F3F4F6] rounded-[40px] p-4 flex flex-col md:flex-row gap-4 h-[auto] lg:h-full"
           >
              
-             {/* Badminton (Light Blue) */}
-             <div className="flex-1 bg-[#DCE9FA] rounded-[30px] p-8 md:p-10 flex flex-col relative overflow-hidden group">
-                <img src={images.badminton} alt="Badminton bg" className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-multiply group-hover:scale-105 transition-transform duration-700 pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#DCE9FA] via-[#DCE9FA]/60 to-transparent pointer-events-none"></div>
-
-                <div className="relative z-10 mt-auto pt-24">
-                  <h3 className="font-dm text-3xl md:text-4xl text-black font-medium tracking-tight">
-                    Badminton
-                  </h3>
-                  <p className="font-dm text-black/80 text-sm mt-3 font-bold">
-                    Speed, agility, and power on our pro-grade courts.
-                  </p>
-                </div>
-             </div>
+             
 
              {/* Pickleball (Sand Yellow) */}
              <div className="flex-1 bg-[#E8CC81] rounded-[30px] p-8 md:p-10 flex flex-col justify-between relative group overflow-hidden">
@@ -140,6 +127,21 @@ const SportsOfferings = () => {
                    <p className="font-dm text-black/80 text-xs mt-2 font-bold max-w-[200px]">
                      The fastest growing urban sport, now in Jammu. Play today.
                    </p>
+                </div>
+             </div>
+
+             {/* Badminton (Light Blue) */}
+             <div className="flex-1 bg-[#DCE9FA] rounded-[30px] p-8 md:p-10 flex flex-col relative overflow-hidden group">
+                <img src={images.badminton} alt="Badminton bg" className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-multiply group-hover:scale-105 transition-transform duration-700 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#DCE9FA] via-[#DCE9FA]/60 to-transparent pointer-events-none"></div>
+
+                <div className="relative z-10 mt-auto pt-24">
+                  <h3 className="font-dm text-3xl md:text-4xl text-black font-medium tracking-tight">
+                    Badminton
+                  </h3>
+                  <p className="font-dm text-black/80 text-sm mt-3 font-bold">
+                    Speed, agility, and power on our pro-grade courts.
+                  </p>
                 </div>
              </div>
 

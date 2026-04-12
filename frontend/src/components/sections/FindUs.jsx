@@ -111,11 +111,14 @@ const FindUs = () => {
              </div>
 
              {/* Row 2: Full Width Address */}
-             <motion.div 
+             <motion.a 
+                href="https://maps.app.goo.gl/UFSHQHCub3LxjB3M7"
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-[30px] p-8 flex flex-col justify-between hover:bg-[#111111] hover:border-primary/30 transition-all duration-300 group flex-1 min-h-[200px]"
+                className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-[30px] p-8 flex flex-col justify-between hover:bg-[#111111] hover:border-primary/30 transition-all duration-300 group flex-1 min-h-[200px] cursor-pointer"
              >
                  <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center border border-[#1F1F1F] group-hover:border-primary/50 transition-colors">
                     <MapPin size={20} className="text-white group-hover:text-primary transition-colors" />
@@ -124,7 +127,7 @@ const FindUs = () => {
                     <p className="text-[10px] text-primary tracking-[0.4em] font-bold uppercase mb-2">Physical Location</p>
                     <h4 className="font-bebas text-3xl md:text-4xl text-white tracking-widest leading-none max-w-sm">Kamla Palace Road, Talab Tillo, Jammu, India.</h4>
                  </div>
-             </motion.div>
+             </motion.a>
 
              {/* Row 3: Digital Ticket Booking CTA */}
              <motion.a 

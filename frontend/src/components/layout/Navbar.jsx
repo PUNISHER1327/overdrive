@@ -63,7 +63,20 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-4 group">
+        <Link 
+          to="/" 
+          className="flex items-center gap-4 group cursor-pointer"
+          onClick={(e) => {
+            if (location.pathname === '/') {
+              e.preventDefault();
+              if (window.lenis) {
+                window.lenis.scrollTo(0, { duration: 1.5 });
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }
+          }}
+        >
           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary group-hover:border-white transition-all duration-500 shrink-0">
             <img 
               src="/logo.jpg" 

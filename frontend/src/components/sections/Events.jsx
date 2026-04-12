@@ -168,7 +168,14 @@ const Events = () => {
                       <Info className="text-primary" size={24} />
                       <div>
                         <p className="text-[10px] text-white/50 uppercase tracking-widest">Location</p>
-                        <p className="font-bold tracking-wide text-primary">{activeEvent.location}</p>
+                        <a 
+                          href="https://maps.app.goo.gl/mmVsfLxGXXynUBAf8" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="font-bold tracking-wide text-primary hover:underline"
+                        >
+                          Overdrive Arena
+                        </a>
                       </div>
                    </div>
                    <div className="w-[1px] h-10 bg-white/20 hidden md:block" />

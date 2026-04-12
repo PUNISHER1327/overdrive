@@ -26,9 +26,9 @@ const sportsData = {
     color: "#F59E0B"
   },
   Badminton: {
-    title: "PRO BADMINTON",
-    description: "Shatter your limits on our BWF standard synthetic wooden-backed courts. Featuring a multi-layered cushioning system engineered to eliminate impact strain on your knees, paired with glare-free aerodynamic lighting.",
-    features: ["BWF Certified Mats", "Wooden Sub-Base", "Anti-Glare Lighting", "Climate Controlled"],
+    title: "BADMINTON",
+    description: "Enjoy an intensive outdoor badminton experience on our premium artificial grass turf. Engineered to mimic professional football grade grass, it actively softens your landings and reduces impact on your joints, ensuring safe and continuous play under the open sky.",
+    features: ["Artificial Grass Turf", "Outdoor Play", "Shock Absorption", "Stadium Lighting"],
     image: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?q=80&w=2000&auto=format&fit=crop",
     color: "#EC4899"
   }
