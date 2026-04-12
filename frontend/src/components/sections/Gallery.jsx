@@ -51,7 +51,21 @@ const Gallery = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    setImages(getGallery());
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/gallery`);
+        const data = await res.json();
+        if (data.success && data.data.length > 0) {
+          setImages(data.data);
+        } else {
+          setImages(getGallery());
+        }
+      } catch (err) {
+        console.error(err);
+        setImages(getGallery());
+      }
+    };
+    fetchGallery();
   }, []);
 
   useEffect(() => {

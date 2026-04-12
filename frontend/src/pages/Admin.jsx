@@ -215,7 +215,20 @@ const Admin = () => {
 
   // Fetch initial public components
   useEffect(() => {
-    setLocalGallery(getGallery());
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/gallery`);
+        const data = await res.json();
+        if (data.success && data.data.length > 0) {
+          setLocalGallery(data.data);
+        } else {
+          setLocalGallery(getGallery()); 
+        }
+      } catch (err) {
+        setLocalGallery(getGallery());
+      }
+    };
+    fetchGallery();
   }, []);
 
   // --- COMPETITIONS HANDLERS ---
@@ -294,9 +307,26 @@ const Admin = () => {
       setLocalGallery(gallery.filter((_, i) => i !== index));
   };
 
-  const saveGallery = () => {
-    setGallery(gallery);
-    alert("Gallery images updated securely! Changes live on homepage.");
+  const saveGallery = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/gallery/sync`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
+        },
+        body: JSON.stringify({ items: gallery })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert('Gallery published live!');
+      } else {
+        alert(data.message || 'Failed to sync gallery');
+      }
+    } catch(err) {
+      console.error(err);
+      alert('Error updating gallery');
+    }
   };
 
   const handleFileUpload = async (index, file) => {

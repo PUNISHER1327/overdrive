@@ -13,6 +13,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import competitionRoutes from "./routes/competitionRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import galleryRoutes from "./routes/galleryRoutes.js";
 
 
 const app = express();
@@ -50,6 +51,7 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/competitions", competitionRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/gallery", galleryRoutes);
 
 
 // Error Handling Middleware

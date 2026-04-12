@@ -85,9 +85,12 @@ const Footer = () => {
               </div>
 
               {/* Copyright */}
-              <div>
+              <div className="flex flex-col items-center md:items-end gap-1">
                  <p className="font-dm text-[10px] uppercase tracking-[0.2em] font-medium text-black/50 text-center md:text-right">
                    © 2024 OVERDRIVE ARENA INC. JAMMU, INDIA.
+                 </p>
+                 <p className="font-dm text-[10px] uppercase tracking-[0.2em] font-bold text-black/70 text-center md:text-right">
+                   MADE BY BUILDORA
                  </p>
               </div>
 
