@@ -18,7 +18,14 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://overdrive-five.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Serve static files from the uploads folder
