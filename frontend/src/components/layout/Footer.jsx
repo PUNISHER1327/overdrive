@@ -32,10 +32,10 @@ const Footer = () => {
                    {/* Column 1 */}
                    <div className="flex flex-col space-y-6">
                       <span className="text-[10px] uppercase tracking-[0.2em] font-black font-dm text-black/50 mb-2">SPORTS</span>
-                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">FOOTBALL</Link>
-                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOX CRICKET</Link>
-                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BADMINTON</Link>
-                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">PICKLEBALL</Link>
+                      <Link to="/about?sport=Football" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">FOOTBALL</Link>
+                      <Link to="/about?sport=Cricket" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOX CRICKET</Link>
+                      <Link to="/about?sport=Badminton" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BADMINTON</Link>
+                      <Link to="/about?sport=Pickleball" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">PICKLEBALL</Link>
                    </div>
 
                    {/* Column 2 */}

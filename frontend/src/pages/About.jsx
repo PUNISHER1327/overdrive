@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowRight, ArrowLeft, Wifi, Watch, Star, Plus, MapPin, CheckCircle2 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const sportsData = {
   Cricket: {
     title: "BOX CRICKET",
     description: "Experience the thrill of box cricket engineered for fast-paced action. Turf perfectly balanced for bounce and grip, enveloped in high-tension safety nets, ensuring continuous play without interruptions.",
     features: ["AstroTurf Pro Surface", "360° Safety Netting", "High-Intensity LED Floodlights", "Automated Scoreboards"],
-    image: "https://images.unsplash.com/photo-1540747913346-19e32fc3e6ed?q=80&w=2000&auto=format&fit=crop",
+    image: "https://res.cloudinary.com/dkw3dx53h/image/upload/v1775968412/Gemini_Generated_Image_l4m6lwl4m6lwl4m6_xzto5x.png",
     color: "#7ED45A"
   },
   Football: {
     title: "5v5 FOOTBALL",
     description: "State-of-the-art FIFA-quality artificial grass designed for 5-a-side dominance. Exceptional shock absorption reduces injury risk while providing authentic ball roll under stadium-grade lighting.",
     features: ["FIFA Quality Pro Turf", "Shock Pad Underlay", "Stadium Quality Lighting", "Custom Goal Posts"],
-    image: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=2000&auto=format&fit=crop",
+    image: "https://res.cloudinary.com/dkw3dx53h/image/upload/v1775967847/20260219_130029_po3zwh.jpg",
     color: "#3B82F6"
   },
   Pickleball: {
     title: "PICKLEBALL",
     description: "The fastest-growing sport in the world now has a premium home in Jammu. Professional-grade hardcourt surfaces with tournament-regulation lines, delivering the perfect bounce for every dink and drive.",
     features: ["Regulation Hardcourt", "Anti-Slip Coating", "Tournament Nets", "Sound Baffles"],
-    image: "https://images.unsplash.com/photo-1622228399573-049bd51aeb8e?q=80&w=2000&auto=format&fit=crop",
+    image: "https://res.cloudinary.com/dkw3dx53h/image/upload/v1775968138/Gemini_Generated_Image_mg9nosmg9nosmg9n_wm4xjb.png",
     color: "#F59E0B"
   },
   Badminton: {
@@ -34,11 +35,28 @@ const sportsData = {
 };
 
 const About = () => {
-  const [activeSport, setActiveSport] = useState("Cricket");
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialSport = searchParams.get('sport') || 'Cricket';
+
+  const [activeSport, setActiveSport] = useState(initialSport);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    const sport = searchParams.get('sport');
+    if (sport && sportsData[sport]) {
+      setActiveSport(sport);
+      
+      // Auto-scroll to the section if arrived via URL param
+      setTimeout(() => {
+        const sportSection = document.getElementById('sports-selector');
+        if (sportSection) {
+          sportSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.search]);
 
   return (
     <div className="bg-[#080808] min-h-screen pb-20 text-white selection:bg-primary selection:text-black">
@@ -131,7 +149,7 @@ const About = () => {
       {/* =========================================
           ZONE 2: INTERACTIVE SPORTS SELECTOR
           ========================================= */}
-      <section className="px-6 md:px-16 container mx-auto py-20">
+      <section id="sports-selector" className="px-6 md:px-16 container mx-auto py-20">
         <div className="text-center mb-12">
           <h2 className="font-bebas text-5xl md:text-7xl tracking-widest text-white mb-4">CHOOSE YOUR ARENA</h2>
           <p className="font-dm text-white/50 text-lg max-w-2xl mx-auto">Explore the state-of-the-art courts available at Overdrive specifically engineered for ultimate performance.</p>

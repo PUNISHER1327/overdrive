@@ -8,7 +8,7 @@ const headlines = [
   {
     range: [0, 0.50],
     heading: "THE ARENA AWAITS",
-    sub: "Jammu's premier 5v5 indoor sports facility"
+    sub: "Jammu's premier 5v5 outdoor sports facility"
   },
   {
     range: [0.50, 1.00],
