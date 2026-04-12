@@ -22,7 +22,7 @@ const facilities = [
     title: "Prime Location",
     desc: "Easy access at Kamla Palace Road with secure, ample parking available for all players and spectators.",
     tags: ["Kamla Palace Road", "Parking Available", "24/7 Security"],
-    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800"
+    image: "https://res.cloudinary.com/dkw3dx53h/image/upload/v1775964328/turf_gallery/lznsvqfarmu1577n86g3.jpg"
   },
   {
     id: 4,
@@ -35,8 +35,8 @@ const facilities = [
     id: 5,
     title: "Easy Booking",
     desc: "Book your favorite slot in seconds via Hudle or WhatsApp without any hassle or waiting in lines.",
-    tags: ["Hudle Integration", "WhatsApp Booking", "Instant Confirmation"],
-    image: "https://images.unsplash.com/photo-1649433391719-2e784576d044?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Ym9va2luZ3xlbnwwfHwwfHx8MA%3D%3D"
+    tags: ["Hudle Integration", "Instant Confirmation"],
+    image: "https://res.cloudinary.com/dkw3dx53h/image/upload/v1775966494/hudleBooking_vfag73.webp"
   }
 ];
 

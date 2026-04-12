@@ -1,5 +1,6 @@
 import { ArrowUp } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -31,18 +32,18 @@ const Footer = () => {
                    {/* Column 1 */}
                    <div className="flex flex-col space-y-6">
                       <span className="text-[10px] uppercase tracking-[0.2em] font-black font-dm text-black/50 mb-2">SPORTS</span>
-                      <a href="#" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">FOOTBALL</a>
-                      <a href="#" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOX CRICKET</a>
-                      <a href="#" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BADMINTON</a>
-                      <a href="#" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">PICKLEBALL</a>
+                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">FOOTBALL</Link>
+                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOX CRICKET</Link>
+                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BADMINTON</Link>
+                      <Link to="/#sports" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">PICKLEBALL</Link>
                    </div>
 
                    {/* Column 2 */}
                    <div className="flex flex-col space-y-6">
                       <span className="text-[10px] uppercase tracking-[0.2em] font-black font-dm text-black/50 mb-2">ARENA</span>
-                      <a href="#about" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">ABOUT</a>
-                      <a href="#gallery" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">GALLERY</a>
-                      <a href="#contact" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">CONTACT</a>
+                      <Link to="/about" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">ABOUT</Link>
+                      <Link to="/#gallery" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">GALLERY</Link>
+                      <Link to="/#contact" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">CONTACT</Link>
                       <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" rel="noopener noreferrer" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOOKING</a>
                    </div>
                 </div>

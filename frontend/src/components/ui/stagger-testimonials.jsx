@@ -1,16 +1,16 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, User } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { API_URL } from '../../config';
 
 const SQRT_5000 = Math.sqrt(5000);
 
 const featuredTestimonials = [
-  { tempId: 'f0', by: "Rahul Sharma, Football MVP", testimonial: "The best turf in Jammu. The lighting is incredible and the atmosphere is always electric.", imgSrc: "https://i.pravatar.cc/150?img=11", rating: 5 },
-  { tempId: 'f1', by: "Amit Mehra, Box Cricket", testimonial: "Overdrive has completely changed the way we play box cricket. Pro-grade facilities!", imgSrc: "https://i.pravatar.cc/150?img=12", rating: 5 },
-  { tempId: 'f2', by: "Sneha Gupta, Badminton", testimonial: "Safe, clean, and top-notch courts. Highly recommend for women's sessions too.", imgSrc: "https://i.pravatar.cc/150?img=5", rating: 5 },
+  { tempId: 'f0', by: "Rahul Sharma, Football MVP", testimonial: "The best turf in Jammu. The lighting is incredible and the atmosphere is always electric.", rating: 5 },
+  { tempId: 'f1', by: "Amit Mehra, Box Cricket", testimonial: "Overdrive has completely changed the way we play box cricket. Pro-grade facilities!", rating: 5 },
+  { tempId: 'f2', by: "Sneha Gupta, Badminton", testimonial: "Safe, clean, and top-notch courts. Highly recommend for women's sessions too.", rating: 5 },
 ];
 
 const TestimonialCard = ({ 
@@ -53,14 +53,17 @@ const TestimonialCard = ({
         }}
       />
       <div className="flex justify-between items-start mb-4">
-        <img
-          src={testimonial.imgSrc}
-          alt={`${testimonial.by.split(',')[0]}`}
-          className="h-14 w-12 bg-[#080808] object-cover object-top filter grayscale"
+        <div 
+          className={cn(
+             "h-14 w-12 flex items-center justify-center border",
+             isCenter ? "bg-black/10 border-black/20 text-black/50" : "bg-[#080808] border-[#1F1F1F] text-white/50"
+          )}
           style={{
-            boxShadow: "3px 3px 0px #080808"
+            boxShadow: isCenter ? "3px 3px 0px rgba(0,0,0,0.1)" : "3px 3px 0px #080808"
           }}
-        />
+        >
+           <User size={24} />
+        </div>
         <div className="flex gap-1">
           {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
             <Star key={i} size={14} fill="currentColor" className={isCenter ? "text-black/40" : "text-primary/40"} />
@@ -99,7 +102,6 @@ export const StaggerTestimonials = () => {
             tempId: r._id,
             by: r.name,
             testimonial: r.comment,
-            imgSrc: r.imgSrc,
             rating: r.rating
           }));
           

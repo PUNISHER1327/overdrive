@@ -1,8 +1,41 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowUpRight, ArrowRight, ArrowLeft, Wifi, Watch, Star, Plus, MapPin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, ArrowRight, ArrowLeft, Wifi, Watch, Star, Plus, MapPin, CheckCircle2 } from 'lucide-react';
+
+const sportsData = {
+  Cricket: {
+    title: "BOX CRICKET",
+    description: "Experience the thrill of box cricket engineered for fast-paced action. Turf perfectly balanced for bounce and grip, enveloped in high-tension safety nets, ensuring continuous play without interruptions.",
+    features: ["AstroTurf Pro Surface", "360° Safety Netting", "High-Intensity LED Floodlights", "Automated Scoreboards"],
+    image: "https://images.unsplash.com/photo-1540747913346-19e32fc3e6ed?q=80&w=2000&auto=format&fit=crop",
+    color: "#7ED45A"
+  },
+  Football: {
+    title: "5v5 FOOTBALL",
+    description: "State-of-the-art FIFA-quality artificial grass designed for 5-a-side dominance. Exceptional shock absorption reduces injury risk while providing authentic ball roll under stadium-grade lighting.",
+    features: ["FIFA Quality Pro Turf", "Shock Pad Underlay", "Stadium Quality Lighting", "Custom Goal Posts"],
+    image: "https://images.unsplash.com/photo-1543326727-b52932ebd629?q=80&w=2000&auto=format&fit=crop",
+    color: "#3B82F6"
+  },
+  Pickleball: {
+    title: "PICKLEBALL",
+    description: "The fastest-growing sport in the world now has a premium home in Jammu. Professional-grade hardcourt surfaces with tournament-regulation lines, delivering the perfect bounce for every dink and drive.",
+    features: ["Regulation Hardcourt", "Anti-Slip Coating", "Tournament Nets", "Sound Baffles"],
+    image: "https://images.unsplash.com/photo-1622228399573-049bd51aeb8e?q=80&w=2000&auto=format&fit=crop",
+    color: "#F59E0B"
+  },
+  Badminton: {
+    title: "PRO BADMINTON",
+    description: "Shatter your limits on our BWF standard synthetic wooden-backed courts. Featuring a multi-layered cushioning system engineered to eliminate impact strain on your knees, paired with glare-free aerodynamic lighting.",
+    features: ["BWF Certified Mats", "Wooden Sub-Base", "Anti-Glare Lighting", "Climate Controlled"],
+    image: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?q=80&w=2000&auto=format&fit=crop",
+    color: "#EC4899"
+  }
+};
 
 const About = () => {
+  const [activeSport, setActiveSport] = useState("Cricket");
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -94,6 +127,85 @@ const About = () => {
       </section>
 
 
+
+      {/* =========================================
+          ZONE 2: INTERACTIVE SPORTS SELECTOR
+          ========================================= */}
+      <section className="px-6 md:px-16 container mx-auto py-20">
+        <div className="text-center mb-12">
+          <h2 className="font-bebas text-5xl md:text-7xl tracking-widest text-white mb-4">CHOOSE YOUR ARENA</h2>
+          <p className="font-dm text-white/50 text-lg max-w-2xl mx-auto">Explore the state-of-the-art courts available at Overdrive specifically engineered for ultimate performance.</p>
+        </div>
+
+        {/* Sport Navigation Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
+          {Object.keys(sportsData).map((sport) => (
+            <button
+              key={sport}
+              onClick={() => setActiveSport(sport)}
+              className={`px-8 py-3 rounded-full font-bebas text-2xl tracking-widest transition-all duration-300 ${
+                activeSport === sport 
+                ? 'bg-primary text-black scale-105' 
+                : 'bg-[#1A1A1A] text-white/50 hover:bg-[#222] hover:text-white'
+              }`}
+            >
+              {sport}
+            </button>
+          ))}
+        </div>
+
+        {/* Active Sport Display */}
+        <div className="bg-[#111111] border border-[#1F1F1F] rounded-[40px] p-6 lg:p-12 overflow-hidden relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            {/* Sport Info */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeSport}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col h-full justify-center order-2 lg:order-1"
+              >
+                <h3 className="font-bebas text-6xl md:text-8xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/30 mb-6 drop-shadow-2xl">
+                  {sportsData[activeSport].title}
+                </h3>
+                <p className="font-dm text-lg md:text-xl text-white/70 leading-relaxed mb-8">
+                  {sportsData[activeSport].description}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {sportsData[activeSport].features.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3 bg-[#1A1A1A] px-4 py-3 rounded-xl border border-white/5">
+                      <CheckCircle2 size={18} className="text-primary shrink-0" />
+                      <span className="font-dm text-sm font-semibold text-white/90">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Sport Image */}
+            <div className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden order-1 lg:order-2 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+               <AnimatePresence mode="wait">
+                 <motion.img
+                   key={activeSport}
+                   src={sportsData[activeSport].image}
+                   initial={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+                   animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                   exit={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                   className="absolute inset-0 w-full h-full object-cover object-center"
+                   alt={activeSport}
+                 />
+               </AnimatePresence>
+               {/* Elegant Gradient Overlay */}
+               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#111111] to-transparent" />
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* =========================================
           ZONE 3: THE BENTO GRID

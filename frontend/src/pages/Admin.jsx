@@ -1,12 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X, Lock, Star, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, CalendarDays, Users, LogOut, Plus, Trash2, Save, X, Lock, Star, MessageSquare, User } from 'lucide-react';
 import { getEvents, setEvents, getGallery, setGallery, getRegistrations } from '../utils/dataStore';
 import { API_URL } from '../config';
 
 const CompetitionsPanel = ({ competitions, setCompetitions, handleUpdateCompetition, deleteCompetition, handleAddCompetition }) => {
   const handleFieldChange = (id, field, value) => {
     setCompetitions(prev => prev.map(c => c._id === id ? { ...c, [field]: value } : c));
+  };
+
+  const handleCompetitionImageUpload = async (id, file) => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('media', file);
+
+    try {
+      const response = await fetch(`${API_URL}/api/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        handleFieldChange(id, 'img', data.url);
+      } else {
+        alert(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error during upload');
+    }
   };
 
   return (
@@ -22,7 +49,7 @@ const CompetitionsPanel = ({ competitions, setCompetitions, handleUpdateCompetit
             <div key={comp._id} className="bg-[#111111] border border-[#1F1F1F] p-6 rounded-2xl relative overflow-hidden flex flex-col md:flex-row gap-8">
                 {/* Image Preview */}
                 <div className="w-full md:w-64 h-48 bg-[#080808] rounded-xl overflow-hidden shrink-0 border border-[#1A1A1A]">
-                   <img src={comp.img} className="w-full h-full object-cover opacity-80" alt="Preview"/>
+                   <img src={comp.img?.startsWith('http') ? comp.img : `${API_URL}${comp.img}`} className="w-full h-full object-cover opacity-80" alt="Preview"/>
                 </div>
                 
                 {/* Form Fields - Editable */}
@@ -66,8 +93,17 @@ const CompetitionsPanel = ({ competitions, setCompetitions, handleUpdateCompetit
                             value={comp.img} 
                             onChange={(e) => handleFieldChange(comp._id, 'img', e.target.value)} 
                             className="flex-1 bg-[#1A1A1A] border border-[#222] text-white px-4 py-2.5 rounded-lg focus:ring-1 focus:ring-primary outline-none text-xs transition-all"
-                            placeholder="https://..."
+                            placeholder="URL or Path"
                           />
+                           <label className="bg-primary/10 text-primary hover:bg-primary hover:text-black px-4 py-2 rounded-lg cursor-pointer transition-colors flex items-center justify-center shrink-0 font-bold text-xs tracking-widest border border-primary/20">
+                              <Plus size={14} className="mr-1" /> UPLOAD
+                              <input 
+                                type="file" 
+                                className="hidden" 
+                                onChange={(e) => handleCompetitionImageUpload(comp._id, e.target.files[0])}
+                                accept="image/*"
+                              />
+                           </label>
                           <button 
                             onClick={() => handleUpdateCompetition(comp._id, comp)} 
                             className="bg-primary/10 text-primary hover:bg-primary hover:text-black border border-primary/20 px-6 py-2 rounded-lg font-bold text-xs tracking-widest transition-all"
@@ -103,9 +139,8 @@ const Admin = () => {
   const [competitions, setCompetitions] = useState([]);
 
   const [gallery, setLocalGallery] = useState([]);
-  const [dbBookings, setDbBookings] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [stats, setStats] = useState(null);
+  const [analyticsStats, setAnalyticsStats] = useState({ visits: 0, bookNowClicks: 0 });
 
   const fetchDashboardStats = async () => {
     try {
@@ -173,7 +208,6 @@ const Admin = () => {
   useEffect(() => {
     if (isAuthenticated) {
       fetchDashboardStats();
-      fetchBookings();
       fetchReviews();
       fetchCompetitions();
     }
@@ -297,6 +331,7 @@ const Admin = () => {
   // --- SUB-COMPONENTS FOR CLEANLINESS ---
 
   const DashboardPanel = () => {
+    /*
     const [blockDate, setBlockDate] = useState('');
     const [blockTime, setBlockTime] = useState('');
 
@@ -314,36 +349,29 @@ const Admin = () => {
           },
           body: JSON.stringify({ date: blockDate, startTime: blockTime, endTime })
         });
-        if(res.ok) {
+          if(res.ok) {
           alert('Slot blocked successfully!');
-          fetchBookings(); // refresh the bookings
         } else {
           alert((await res.json()).message);
         }
       } catch(err) { console.error(err) }
     };
+    */
 
     return (
       <div className="space-y-8">
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-[#111111] p-6 rounded-2xl border border-[#1F1F1F]">
-               <h4 className="text-white/50 text-xs font-dm uppercase tracking-widest font-bold mb-2">Today's Revenue</h4>
-               <p className="text-3xl font-bebas tracking-widest text-primary">₹{stats?.revenue?.daily || 0}</p>
+               <h4 className="text-white/50 text-xs font-dm uppercase tracking-widest font-bold mb-2">Total Website Visits</h4>
+               <p className="text-4xl font-bebas tracking-widest text-primary">{analyticsStats?.visits || 0}</p>
             </div>
             <div className="bg-[#111111] p-6 rounded-2xl border border-[#1F1F1F]">
-               <h4 className="text-white/50 text-xs font-dm uppercase tracking-widest font-bold mb-2">Weekly Revenue</h4>
-               <p className="text-3xl font-bebas tracking-widest text-primary">₹{stats?.revenue?.weekly || 0}</p>
-            </div>
-            <div className="bg-[#111111] p-6 rounded-2xl border border-[#1F1F1F]">
-               <h4 className="text-white/50 text-xs font-dm uppercase tracking-widest font-bold mb-2">Monthly Revenue</h4>
-               <p className="text-3xl font-bebas tracking-widest text-primary">₹{stats?.revenue?.monthly || 0}</p>
-            </div>
-            <div className="bg-[#111111] p-6 rounded-2xl border border-[#1F1F1F]">
-               <h4 className="text-white/50 text-xs font-dm uppercase tracking-widest font-bold mb-2">Weekly Bookings</h4>
-               <p className="text-3xl font-bebas tracking-widest text-white">{stats?.weeklyBookingsCount || 0}</p>
+               <h4 className="text-white/50 text-xs font-dm uppercase tracking-widest font-bold mb-2">Book Now Clicks</h4>
+               <p className="text-4xl font-bebas tracking-widest text-primary">{analyticsStats?.bookNowClicks || 0}</p>
             </div>
          </div>
 
+         {/*
          <div className="bg-[#111111] border border-[#1F1F1F] rounded-2xl p-6">
             <h3 className="text-white font-bebas text-3xl tracking-widest mb-4">Quick Block Slot</h3>
             <form onSubmit={handleBlockSlot} className="flex flex-col md:flex-row gap-4 items-end">
@@ -361,56 +389,10 @@ const Admin = () => {
                <button type="submit" className="w-full md:w-auto bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-black font-bold font-dm text-sm px-8 py-3 rounded-lg transition-colors border border-red-500/20">BLOCK SLOT</button>
             </form>
          </div>
+         */}
       </div>
     );
   };
-
-  const BookingsPanel = () => (
-    <div className="bg-[#111111] border border-[#1F1F1F] rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-[#1F1F1F]">
-           <h3 className="text-white font-bebas text-3xl tracking-widest">Database Bookings</h3>
-           <p className="text-white/50 text-sm font-dm mt-1">All confirmed, cancelled, or blocked slots synchronized directly from MongoDB.</p>
-        </div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-left font-dm text-sm text-white/80">
-                <thead className="bg-[#1A1A1A] text-xs uppercase tracking-widest text-primary">
-                    <tr>
-                        <th className="px-6 py-4">Status</th>
-                        <th className="px-6 py-4">Name</th>
-                        <th className="px-6 py-4">Phone</th>
-                        <th className="px-6 py-4">Date</th>
-                        <th className="px-6 py-4">Start Time</th>
-                        <th className="px-6 py-4">Amount</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1F1F1F]">
-                    {dbBookings.map(b => (
-                        <tr key={b._id} className="hover:bg-white/5 transition-colors">
-                            <td className="px-6 py-4">
-                               <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                 b.status === 'confirmed' ? 'bg-primary/20 text-primary' : 
-                                 b.status === 'blocked' ? 'bg-red-500/20 text-red-500' : 'bg-gray-500/20 text-gray-500'
-                               }`}>
-                                   {b.status.toUpperCase()}
-                               </span>
-                            </td>
-                            <td className="px-6 py-4 text-white font-bold">{b.name}</td>
-                            <td className="px-6 py-4 text-white/50">{b.phone}</td>
-                            <td className="px-6 py-4">{isNaN(new Date(b.date).getTime()) ? b.date : new Date(b.date).toLocaleDateString()}</td>
-                            <td className="px-6 py-4 font-bold">{b.startTime}</td>
-                            <td className="px-6 py-4 text-primary">₹{b.amount}</td>
-                        </tr>
-                    ))}
-                    {dbBookings.length === 0 && (
-                        <tr><td colSpan="6" className="text-center py-8 text-white/40">No entries found</td></tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
-    </div>
-  );
-
-
 
   const GalleryPanel = () => (
     <div className="space-y-6">
@@ -539,7 +521,9 @@ const Admin = () => {
               {reviews.map(r => (
                 <div key={r._id} className="bg-[#111111] border border-[#1F1F1F] p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div className="flex gap-4 items-center">
-                        <img src={r.imgSrc} className="w-12 h-12 rounded-full grayscale border border-white/10" alt={r.name} />
+                        <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-white/5 text-white/50 shrink-0">
+                           <User size={20} />
+                        </div>
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <h4 className="text-white font-bold font-dm text-sm">{r.name}</h4>
@@ -646,9 +630,6 @@ const Admin = () => {
             <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'dashboard' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <LayoutDashboard size={18} /> Dashboard Overview
             </button>
-            <button onClick={() => setActiveTab('bookings')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'bookings' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
-                <Users size={18} /> Bookings
-            </button>
             <button onClick={() => setActiveTab('competitions')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'competitions' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <CalendarDays size={18} /> Competitions
             </button>
@@ -678,7 +659,6 @@ const Admin = () => {
               className="bg-[#111111] text-white border border-[#1F1F1F] rounded p-2 text-sm"
             >
                 <option value="dashboard">Dashboard</option>
-                <option value="bookings">Bookings</option>
                 <option value="gallery">Gallery</option>
                 <option value="reviews">Reviews</option>
                  <option value="competitions">Competitions</option>
@@ -697,7 +677,6 @@ const Admin = () => {
                     transition={{ duration: 0.2 }}
                  >
                      {activeTab === 'dashboard' && <DashboardPanel />}
-                     {activeTab === 'bookings' && <BookingsPanel />}
                      {activeTab === 'competitions' && <CompetitionsPanel competitions={competitions} setCompetitions={setCompetitions} handleUpdateCompetition={handleUpdateCompetition} deleteCompetition={deleteCompetition} handleAddCompetition={handleAddCompetition} />}
 
                      {activeTab === 'gallery' && <GalleryPanel />}

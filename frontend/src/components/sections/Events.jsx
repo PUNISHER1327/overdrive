@@ -36,11 +36,8 @@ const Events = () => {
   };
 
   const handleRegistration = (eventName) => {
-     const teamName = prompt(`Enter Team Name to register for ${eventName}:`);
-     if (teamName) {
-         registerTeam(teamName, eventName);
-         alert(`Registration received for ${teamName}! Our team will contact you shortly.`);
-     }
+     const text = encodeURIComponent(`Hi! I would like to register my team for the ${eventName} tournament.`);
+     window.open(`https://wa.me/917051107301?text=${text}`, '_blank');
   };
 
   if (loading) return null;
@@ -76,7 +73,9 @@ const Events = () => {
           </motion.p>
           
           <motion.a 
-            href="#" 
+            href="https://www.instagram.com/overdrive_arena"
+            target="_blank"
+            rel="noopener noreferrer"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -111,7 +110,7 @@ const Events = () => {
             className="absolute inset-0"
           >
             <img 
-              src={activeEvent.img} 
+              src={activeEvent.img?.startsWith('http') ? activeEvent.img : `${API_URL}${activeEvent.img}`} 
               alt={activeEvent.title} 
               className="w-full h-full object-cover object-center opacity-70 mix-blend-luminosity brightness-[0.4]"
             />

@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../../config';
 
 const headlines = [
   {
@@ -232,6 +233,7 @@ const Hero = () => {
                 >
                   <button
                     onClick={() => {
+                      fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error);
                       window.open("https://hudle.in/venues/overdrive-arena/883625", "_blank");
                     }}
                     onMouseEnter={(e) => {
