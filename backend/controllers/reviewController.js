@@ -10,8 +10,7 @@ export const submitReview = async (req, res) => {
     const review = await Review.create({
       name,
       comment,
-      rating,
-      imgSrc: `https://i.pravatar.cc/150?u=${name.replace(/\s+/g, '')}`
+      rating
     });
 
     res.status(201).json({

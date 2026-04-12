@@ -17,10 +17,6 @@ const reviewSchema = new mongoose.Schema(
       min: 1,
       max: 5,
     },
-    imgSrc: {
-      type: String,
-      default: "https://i.pravatar.cc/150?u=overdrive_user",
-    },
     isApproved: {
       type: Boolean,
       default: false,
