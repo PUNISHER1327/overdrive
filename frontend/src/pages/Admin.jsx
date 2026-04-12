@@ -588,6 +588,7 @@ const Admin = () => {
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="off"
                 className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary font-dm outline-none transition-all"
                 placeholder="admin@overdrive.com"
                 required
@@ -599,6 +600,7 @@ const Admin = () => {
                 type="password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
                 className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-white px-4 py-3 rounded-lg focus:ring-1 focus:ring-primary font-dm outline-none transition-all"
                 placeholder="••••••"
                 required
