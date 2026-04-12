@@ -36,7 +36,7 @@ const SportsOfferings = () => {
   }, []);
 
   return (
-    <section id="sports" ref={containerRef} className="bg-[#080808] py-24 md:py-32 px-4 md:px-10 overflow-hidden">
+    <section id="sports" ref={containerRef} className="bg-[#080808] py-24 md:py-32 px-4 md:px-10 overflow-hidden scroll-mt-24">
       <div className="container mx-auto max-w-[1200px]">
         
         {/* BENTO GRID */}

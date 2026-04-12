@@ -3,17 +3,17 @@ import { MapPin, Phone, Clock, Navigation, ArrowUpRight } from 'lucide-react';
 
 const FindUs = () => {
   return (
-    <section id="contact" className="bg-[#050505] py-32 overflow-hidden border-t border-[#1F1F1F]">
+    <section id="contact" className="bg-[#050505] py-32 overflow-hidden border-t border-[#1F1F1F] scroll-mt-24">
       <div className="container mx-auto px-6 max-w-7xl">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
           <div>
             <motion.h2 
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 1 }}
-              className="font-bebas text-7xl md:text-9xl text-white tracking-widest uppercase leading-none"
+              className="font-bebas text-5xl sm:text-7xl md:text-9xl text-white tracking-[0.1em] md:tracking-widest uppercase leading-none"
             >
               TRANSMIT <br/> <span className="text-primary">COORDINATES</span>
             </motion.h2>
@@ -22,17 +22,17 @@ const FindUs = () => {
              initial={{ opacity: 0, y: 20 }} 
              whileInView={{ opacity: 1, y: 0 }}
              transition={{ duration: 1, delay: 0.2 }}
-             className="text-right"
+             className="text-left md:text-right"
           >
-             <p className="font-dm text-white/50 uppercase tracking-[0.4em] font-black text-xs md:text-sm">
+             <p className="font-dm text-white/50 uppercase tracking-[0.2em] md:tracking-[0.4em] font-black text-[10px] md:text-sm">
                 COMMAND CENTER ACTIVE
              </p>
-             <div className="flex items-center gap-2 justify-end mt-2">
+             <div className="flex items-center gap-2 justify-start md:justify-end mt-2">
                  <span className="relative flex h-3 w-3">
                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                    <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
                  </span>
-                 <p className="text-primary font-dm text-[10px] tracking-widest font-bold">LIVE LOCATION PINNED</p>
+                 <p className="text-primary font-dm text-[10px] tracking-[0.2em] md:tracking-widest font-bold">LIVE LOCATION PINNED</p>
              </div>
           </motion.div>
         </div>

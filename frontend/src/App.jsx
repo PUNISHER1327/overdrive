@@ -30,7 +30,11 @@ function App() {
       const interval = setInterval(() => {
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          if (window.lenis) {
+            window.lenis.scrollTo(element, { offset: -100, duration: 1.5 });
+          } else {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
           clearInterval(interval);
         }
         attempts++;
@@ -43,7 +47,7 @@ function App() {
   }, [location.pathname, location.hash]);
 
   return (
-    <main className="bg-[#080808] min-h-screen text-white overflow-clip">
+    <main className="bg-[#080808] min-h-screen text-white overflow-x-hidden">
       {!isAdmin && <Navbar />}
       
       <Routes>

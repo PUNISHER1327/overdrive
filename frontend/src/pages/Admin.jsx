@@ -88,7 +88,7 @@ const CompetitionsPanel = ({ competitions, setCompetitions, handleUpdateCompetit
                     </div>
                     <div className="md:col-span-2">
                         <label className="text-[10px] text-white/50 uppercase tracking-widest font-bold block mb-1">Background Image URL</label>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                           <input 
                             value={comp.img} 
                             onChange={(e) => handleFieldChange(comp._id, 'img', e.target.value)} 
@@ -649,7 +649,7 @@ const Admin = () => {
       </div>
 
       {/* Main Content Area (Natural Scroll) */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-screen min-w-0">
          {/* Mobile Header */}
          <div className="md:hidden p-6 border-b border-[#1F1F1F] bg-[#0A0A0A] flex justify-between items-center sticky top-0 z-50">
             <h1 className="font-bebas text-2xl text-white tracking-widest">OVERDRIVE <span className="text-primary italic">CMS</span></h1>

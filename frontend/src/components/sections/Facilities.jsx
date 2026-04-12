@@ -127,12 +127,24 @@ const Facilities = () => {
                              <p className="font-dm text-textMuted text-sm md:text-base mb-8 leading-relaxed max-w-md">
                                {fac.desc}
                              </p>
-                             <div className="flex flex-wrap gap-3">
+                             <div className="flex flex-wrap gap-3 mb-6">
                                {fac.tags.map(t => (
                                  <span key={t} className="px-5 py-2 rounded-full border border-[#2A2A2A] text-[10px] md:text-xs font-dm font-bold text-white uppercase tracking-widest bg-[#111] hover:border-primary hover:text-primary transition-all cursor-default">
                                    {t}
                                  </span>
                                ))}
+                             </div>
+
+                             {/* Mobile Image (Visible only on small screens inside Accordion) */}
+                             <div className="w-full h-[220px] sm:h-[300px] md:h-[400px] lg:hidden rounded-[20px] overflow-hidden relative mt-6">
+                                 <motion.img 
+                                   initial={{ opacity: 0, scale: 1.05 }}
+                                   animate={{ opacity: 1, scale: 1 }}
+                                   transition={{ duration: 0.4 }}
+                                   src={fac.image}
+                                   className="absolute inset-0 w-full h-full object-cover"
+                                   alt={fac.title}
+                                 />
                              </div>
                           </div>
                        </motion.div>
@@ -172,21 +184,7 @@ const Facilities = () => {
              </div>
           </div>
           
-          {/* Mobile Image (Visible only on small screens) */}
-          <div className="w-full h-[400px] lg:hidden rounded-3xl overflow-hidden relative mt-8">
-              <AnimatePresence mode="wait">
-                  <motion.img 
-                    key={activeIndex}
-                    src={facilities[activeIndex].image}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-              </AnimatePresence>
-          </div>
-
+          {/* Mobile Image rendering shifted inside accordion */}
         </div>
       </div>
     </section>

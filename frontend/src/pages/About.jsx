@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowRight, ArrowLeft, Wifi, Watch, Star, Plus, MapPin, CheckCircle2 } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const sportsData = {
   Cricket: {
@@ -40,6 +40,7 @@ const About = () => {
   const initialSport = searchParams.get('sport') || 'Cricket';
 
   const [activeSport, setActiveSport] = useState(initialSport);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const sport = searchParams.get('sport');
@@ -102,7 +103,10 @@ const About = () => {
                   <ArrowUpRight size={18} />
                </div>
              </a>
-             <button className="bg-[#1F1F1F]/80 backdrop-blur-md text-white font-dm font-medium text-lg px-8 py-4 rounded-full hover:bg-white hover:text-black transition-colors duration-300">
+             <button
+               onClick={() => navigate('/')}
+               className="bg-[#1F1F1F]/80 backdrop-blur-md text-white font-dm font-medium text-lg px-8 py-4 rounded-full hover:bg-white hover:text-black transition-colors duration-300"
+             >
                More about Overdrive
              </button>
           </motion.div>
@@ -113,31 +117,18 @@ const About = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="w-full max-w-[1400px] mx-auto mb-10 mt-auto flex flex-col md:flex-row items-stretch gap-4"
+          className="w-full max-w-[1400px] mx-auto mb-10 mt-auto"
         >
-          {/* Card 1: Solid Accent block */}
-          <div className="bg-primary text-black rounded-[30px] p-6 flex flex-col justify-between flex-1 relative cursor-pointer hover:bg-white transition-colors duration-500 group">
+          {/* Card 1: Book Now CTA */}
+          <div className="bg-primary text-black rounded-[30px] p-6 flex flex-col justify-between relative cursor-pointer hover:bg-white transition-colors duration-500 group max-w-sm">
              <div className="absolute top-6 right-6 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                 <ArrowUpRight size={16} />
              </div>
              <div className="mt-auto">
-               <h3 className="font-dm font-black text-2xl md:text-3xl leading-none mb-2">Get 1st Match <br/> Discount</h3>
+               <h3 className="font-dm font-black text-2xl md:text-3xl leading-none mb-2">4 Sports. <br/> 1 Arena.</h3>
                <p className="font-dm text-xs font-semibold text-black/70">
-                 Just give us a call or visit the front desk to claim your introductory offer.
+                 Football, Box Cricket, Badminton & Pickleball — all under premium floodlights at Kamla Palace Road, Jammu.
                </p>
-             </div>
-          </div>
-
-          {/* Card 2: Glassmorphism Quote block */}
-          <div className="bg-[#111111]/40 backdrop-blur-xl border border-white/10 rounded-[30px] p-6 md:p-8 flex-1 min-w-[30%] flex flex-col justify-between text-center relative max-w-[500px]">
-             
-             <p className="font-dm text-white font-medium text-sm md:text-base max-w-[80%] mx-auto mt-4 px-4">
-               Your skills sharpen while you play. Make our 24/7 floodlit turfs your secret weapon for maximum progression.
-             </p>
-             
-             <div className="flex justify-between items-end w-full mt-8 font-dm text-xs text-white/50 tracking-widest uppercase">
-               <span className="flex items-center gap-1"><MapPin size={12}/> Jammu, IN</span>
-               <span>Est. 22</span>
              </div>
           </div>
         </motion.div>

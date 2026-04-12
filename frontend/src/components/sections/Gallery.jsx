@@ -89,7 +89,7 @@ const Gallery = () => {
   if (images.length === 0) return null;
 
   return (
-    <section id="gallery" className="bg-[#0A0A0A] py-32 overflow-hidden border-b border-[#1F1F1F]">
+    <section id="gallery" className="bg-[#0A0A0A] py-32 overflow-hidden border-b border-[#1F1F1F] scroll-mt-24">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div>

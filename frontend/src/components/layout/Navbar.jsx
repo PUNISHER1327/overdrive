@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +24,37 @@ const Navbar = () => {
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/#contact' },
   ];
+
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+
+    if (href.startsWith('/#')) {
+      const hash = href.replace('/#', '');
+      if (location.pathname !== '/') {
+        // Navigate to Home, then after 1s auto-click the same link
+        // (by then Home is mounted and on-page scroll works fine)
+        navigate('/');
+        setTimeout(() => {
+          const navLink = document.querySelector(`a[data-nav-id="${hash}"]`);
+          if (navLink) navLink.click();
+        }, 1000);
+      } else {
+        // Already on home page — scroll directly
+        const element = document.getElementById(hash);
+        if (element) {
+          if (window.lenis) {
+            window.lenis.scrollTo(element, { offset: -100, duration: 1.5 });
+          } else {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+          window.history.pushState(null, '', href);
+        }
+      }
+    } else {
+      navigate(href);
+    }
+  };
 
   return (
     <nav
@@ -47,15 +79,17 @@ const Navbar = () => {
         {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center space-x-10">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.name}
-              to={link.href}
-              className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors ${
+              href={link.href}
+              data-nav-id={link.href.replace('/#', '')}
+              onClick={(e) => handleNavClick(e, link.href)}
+              className={`text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer ${
                 location.pathname === link.href ? 'text-primary' : 'text-white hover:text-primary'
               }`}
             >
               {link.name}
-            </Link>
+            </a>
           ))}
           <a
             href="https://hudle.in/venues/overdrive-arena/883625"
@@ -86,14 +120,15 @@ const Navbar = () => {
               <X size={32} />
             </button>
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.name}
-                to={link.href}
-                className="font-bebas text-5xl text-white hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
+                href={link.href}
+                data-nav-id={link.href.replace('/#', '')}
+                className="font-bebas text-5xl text-white hover:text-primary transition-colors cursor-pointer"
+                onClick={(e) => handleNavClick(e, link.href)}
               >
                 {link.name}
-              </Link>
+              </a>
             ))}
             <a
               href="https://hudle.in/venues/overdrive-arena/883625"
