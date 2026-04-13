@@ -1,4 +1,5 @@
 import Booking from "../models/Booking.js";
+import Analytics from "../models/Analytics.js";
 
 // @desc Get dashboard stats (revenue, weekly bookings)
 // @route GET /api/admin/dashboard
@@ -39,13 +40,18 @@ export const getDashboardStats = async (req, res) => {
         }
     });
 
+    // Fetch analytics data
+    const analytics = await Analytics.findOne() || { visits: 0, bookNowClicks: 0 };
+
     res.json({
         revenue: {
             daily: dailyRevenue,
             weekly: weeklyRevenue,
             monthly: monthlyRevenue
         },
-        weeklyBookingsCount
+        weeklyBookingsCount,
+        visits: analytics.visits,
+        bookNowClicks: analytics.bookNowClicks
     });
 
   } catch (error) {

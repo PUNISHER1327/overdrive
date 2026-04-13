@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowRight, ArrowLeft, Wifi, Watch, Star, Plus, MapPin, CheckCircle2 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 
 const sportsData = {
   Cricket: {
@@ -97,7 +98,7 @@ const About = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="flex flex-wrap items-center gap-4"
           >
-             <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" rel="noopener noreferrer" className="bg-primary text-black font-dm font-bold text-lg px-8 py-4 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-colors duration-300 group inline-flex">
+             <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" rel="noopener noreferrer" onClick={() => fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error)} className="bg-primary text-black font-dm font-bold text-lg px-8 py-4 rounded-full flex items-center gap-2 hover:bg-white hover:text-black transition-colors duration-300 group inline-flex">
                Book your slot 
                <div className="bg-black/10 group-hover:bg-black group-hover:text-white p-1 rounded-full transition-colors">
                   <ArrowUpRight size={18} />

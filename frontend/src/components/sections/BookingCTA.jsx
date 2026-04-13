@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { API_URL } from '../../config';
 
 const BookingCTA = () => {
   return (
@@ -46,6 +47,7 @@ const BookingCTA = () => {
           <a 
             href="https://hudle.in/venues/overdrive-arena/883625"
             target="_blank"
+            onClick={() => fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error)}
             className="relative font-bebas text-4xl md:text-5xl px-16 py-8 rounded-full bg-primary text-black tracking-widest hover:bg-white hover:text-black transition-all duration-500 block shadow-2xl transform group-hover:scale-105 active:scale-95"
           >
             BOOK ON HUDLE
