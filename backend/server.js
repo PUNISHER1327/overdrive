@@ -25,7 +25,7 @@ app.use(cors({
     "https://www.overdrivearena.com",
     "https://overdrivearena.com"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true
 }));
 app.use(express.json());

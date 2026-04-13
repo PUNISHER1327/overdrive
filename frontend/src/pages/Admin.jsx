@@ -147,7 +147,10 @@ const Admin = () => {
       const response = await fetch(`${API_URL}/api/admin/dashboard`, {
         headers: { Authorization: `Bearer ${sessionStorage.getItem('od_admin_token')}` }
       });
-      if(response.ok) setStats(await response.json());
+      if (response.ok) {
+  const data = await response.json();
+  setAnalyticsStats(data);
+}
     } catch(err) { console.error(err) }
   };
 
