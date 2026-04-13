@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, Navigation, ArrowUpRight } from 'lucide-react';
-
+import { API_URL } from '../../config';
 const FindUs = () => {
   return (
     <section id="contact" className="bg-[#050505] py-32 overflow-hidden border-t border-[#1F1F1F] scroll-mt-24">
@@ -134,6 +134,7 @@ const FindUs = () => {
                 href="https://hudle.in/venues/overdrive-arena/883625"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error)}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}

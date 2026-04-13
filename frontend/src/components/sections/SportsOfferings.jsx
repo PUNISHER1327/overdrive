@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, CheckSquare } from 'lucide-react';
-
+import { API_URL } from '../../config';
 gsap.registerPlugin(ScrollTrigger);
 
 const images = {
@@ -58,6 +58,7 @@ const SportsOfferings = () => {
                   href="https://hudle.in/venues/overdrive-arena/883625"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error)}
                   className="inline-flex items-center gap-2 border border-black text-black text-xs font-dm font-bold uppercase tracking-widest px-6 py-3 rounded-full mt-8 hover:bg-black hover:text-white transition-all"
                 >
                   Book Slot

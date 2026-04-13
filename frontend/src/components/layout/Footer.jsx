@@ -1,7 +1,7 @@
 import { ArrowUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
+import { API_URL } from '../../config';
 const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -42,9 +42,9 @@ const Footer = () => {
                    <div className="flex flex-col space-y-6">
                       <span className="text-[10px] uppercase tracking-[0.2em] font-black font-dm text-black/50 mb-2">ARENA</span>
                       <Link to="/about" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">ABOUT</Link>
-                      <Link to="/#gallery" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">GALLERY</Link>
+                      <Link to="/#gallery" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">HIGHLIGHTS</Link>
                       <Link to="/#contact" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">CONTACT</Link>
-                      <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" rel="noopener noreferrer" className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOOKING</a>
+                      <a href="https://hudle.in/venues/overdrive-arena/883625" target="_blank" rel="noopener noreferrer" onClick={() => fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error)} className="font-dm text-sm font-bold uppercase tracking-wider text-black hover:text-white transition-colors">BOOKING</a>
                    </div>
                 </div>
 
@@ -80,7 +80,7 @@ const Footer = () => {
               {/* Socials */}
               <div className="flex gap-8">
                  <a href="https://instagram.com/overdrive_arena" target="_blank" className="font-dm text-[11px] font-bold uppercase tracking-widest text-black hover:text-white transition-colors">INSTAGRAM</a>
-                 <a href="https://wa.me/917051107301" target="_blank" className="font-dm text-[11px] font-bold uppercase tracking-widest text-black hover:text-white transition-colors">WHATSAPP</a>
+                 <a href="https://wa.me/919673357356" target="_blank" className="font-dm text-[11px] font-bold uppercase tracking-widest text-black hover:text-white transition-colors">WHATSAPP</a>
               </div>
 
               {/* Copyright */}

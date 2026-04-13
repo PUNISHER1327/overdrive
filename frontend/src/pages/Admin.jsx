@@ -431,11 +431,11 @@ const Admin = () => {
     <div className="space-y-6">
         <div className="flex justify-between items-center mb-6">
             <div>
-               <h3 className="text-white font-bebas text-4xl tracking-widest">Gallery Injection</h3>
+               <h3 className="text-white font-bebas text-4xl tracking-widest">Highlights Management</h3>
                <p className="text-white/50 text-sm font-dm">Swap out images or add entirely new ones to the horizontal carousel.</p>
             </div>
             <button onClick={saveGallery} className="bg-primary text-black flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm tracking-widest hover:bg-white transition-colors">
-                <Save size={16} /> PUBLISH GALLERY
+                <Save size={16} /> PUBLISH HIGHLIGHTS
             </button>
         </div>
 
@@ -457,7 +457,7 @@ const Admin = () => {
                         <img
                           src={item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`}
                           className="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-700 pointer-events-none shadow-2xl"
-                          alt={`Arena Gallery ${item.id}`}
+                          alt={`Arena Highlights ${item.id}`}
                         />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/80 via-transparent to-transparent pointer-events-none"></div>
@@ -670,7 +670,7 @@ const Admin = () => {
             </button>
 
             <button onClick={() => setActiveTab('gallery')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'gallery' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
-                <ImageIcon size={18} /> Gallery Media
+                <ImageIcon size={18} /> Highlights Media
             </button>
             <button onClick={() => setActiveTab('reviews')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold font-dm text-sm transition-colors ${activeTab === 'reviews' ? 'bg-primary text-black' : 'text-white/50 hover:bg-[#111111] hover:text-white'}`}>
                 <MessageSquare size={18} /> Player Reviews
@@ -694,7 +694,7 @@ const Admin = () => {
               className="bg-[#111111] text-white border border-[#1F1F1F] rounded p-2 text-sm"
             >
                 <option value="dashboard">Dashboard</option>
-                <option value="gallery">Gallery</option>
+                <option value="gallery">Highlights</option>
                 <option value="reviews">Reviews</option>
                  <option value="competitions">Competitions</option>
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
+import { API_URL } from '../../config';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +20,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Sports', href: '/#sports' },
-    { name: 'Gallery', href: '/#gallery' },
+    { name: 'Highlights', href: '/#gallery' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/#contact' },
   ];
@@ -108,6 +108,7 @@ const Navbar = () => {
             href="https://hudle.in/venues/overdrive-arena/883625"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error)}
             className="bg-primary text-black font-bebas px-6 py-2 rounded-full text-lg tracking-widest hover:bg-white hover:text-black border border-primary transition-all duration-300"
           >
             BOOK A SLOT
@@ -148,7 +149,10 @@ const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="bg-primary text-black font-bebas px-10 py-4 rounded-full text-2xl tracking-widest mt-6"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => {
+                fetch(`${API_URL}/api/analytics/click`, { method: 'POST' }).catch(console.error);
+                setIsMenuOpen(false);
+              }}
             >
               BOOK A SLOT
             </a>
