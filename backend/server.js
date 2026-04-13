@@ -22,7 +22,8 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://overdrive-five.vercel.app"
+    "https://www.overdrivearena.com",
+    "https://overdrivearena.com"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
